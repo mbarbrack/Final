@@ -8,7 +8,7 @@ for(var i = 0; i< numDrops;++i){
     yPositions.push(random(0,400));
     xPositions.push(random(0,400));
     dropColors.push(color(255, 255, 255), random(0,255), random(0,255));
-    dropSpeeds.push(0);
+    dropSpeeds.push(-3);
 }
 
 mouseClicked = function(){
