@@ -250,6 +250,9 @@ var splashScene = function(){
     text("Name", 150,100);
     drawBitmoji(83,81,75);
     drawME (321,61,74);
+    fill(0,0,0);
+    text("Matt Barbrack",321,250);
+    text("Matt Boekamp",83,250);
     
 };
 
