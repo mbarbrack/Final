@@ -1,5 +1,5 @@
-var xPositions = [200];
-var yPositions = [0];
+var xPositions = [];
+var yPositions = [];
 var dropColors = [];
 var dropSpeeds = [];
 var numDrops = 50;
