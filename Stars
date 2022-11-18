@@ -1,0 +1,36 @@
+var xPositions = [200];
+var yPositions = [0];
+var dropColors = [];
+var dropSpeeds = [];
+var numDrops = 50;
+
+for(var i = 0; i< numDrops;++i){
+    yPositions.push(random(0,400));
+    xPositions.push(random(0,400));
+    dropColors.push(color(255, 255, 255), random(0,255), random(0,255));
+    dropSpeeds.push(0);
+}
+
+mouseClicked = function(){
+    yPositions.push(random(0,400));
+    xPositions.push(random(0,400));
+};
+
+
+draw = function() {
+    background(24, 32, 115);
+    noStroke();
+    
+    
+    for (var i = 0; i < xPositions.length; i++) {
+        fill(dropColors[i]);
+        ellipse(xPositions[i], yPositions[i], 8,9);
+        yPositions[i] += 5;
+        yPositions[i] += dropSpeeds[i]; 
+        
+        yPositions[i] = yPositions[i] %  400;
+    }
+
+     
+    
+};
