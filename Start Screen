@@ -113,7 +113,6 @@ var drawBitmoji=function(bitmojiX,bitmojiY,bitmojiH){
     fill(117, 82, 82);
     ellipse (bitmojiX-20*bitmojiH/100,bitmojiY-18*bitmojiH/100,7*bitmojiH/100,7*bitmojiH/100);
 };
-
 var drawME=function(mattx,matty,h){
 stroke(0);
 fill(255, 243, 209);
@@ -162,6 +161,9 @@ line(mattx-38*h/220,matty+56*h/219,mattx+40*h/217, matty+56*h/220);
 };
 
 var Button = function(config) {
+    this.r = config.r || 0;
+    this.g = config.g || 0;
+    this.b = config.b || 0;
     this.x = config.x || 0;
     this.y = config.y || 0;
     this.width = config.width || 150;
@@ -171,7 +173,7 @@ var Button = function(config) {
 };
 
 Button.prototype.draw = function() {
-    fill(0, 234, 255);
+    fill(this.r, this.g, this.b);
     rect(this.x, this.y, this.width, this.height, 5);
     fill(0, 0, 0);
     textSize(19);
@@ -195,6 +197,9 @@ Button.prototype.handleMouseClick = function() {
 var btn1 = new Button({
     x: 170,
     y: 186,
+    r: 255,
+    g: 255,
+    b: 255,
     width: 63,
     label: "Start",
     onClick: function() {
@@ -215,11 +220,11 @@ var splashScene = function(){
     btn1.draw();
     fill(255, 255, 255);
     textSize(40);
-    text("Name", 150,100);
-    drawBitmoji(83,81,75);
-    drawME (321,61,74);
+    text("Game Name", 95,100);
+    drawBitmoji(42,212,75);
+    drawME (353,189,74);
     fill(0,0,0);
-    text("Matt Barbrack",321,250);
+    text("Matt Barbrack",80,312);
     text("Matt Boekamp",83,250);
     
 };
