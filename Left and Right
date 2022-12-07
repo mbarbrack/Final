@@ -33,11 +33,11 @@ var xPositions = [];
 var yPositions = [];
 var dropColors = [];
 var dropSpeeds = [];
-var numDrops = 50;
+var numDrops = 100;
 var currentScene= 0;
 
 var createBitmoji = function(x,y){
-    player(x+-158,y+-178);
+    player(x,y-200);
 };
 
 var Bitmoji = function(x, y) {
@@ -47,33 +47,33 @@ var Bitmoji = function(x, y) {
 };
 
 Bitmoji.prototype.draw = function() {
-    this.x = constrain(this.x, 30, 370);
+    this.x = constrain(this.x, -100, 360);
     createBitmoji (this.x, this.y, 50);
 };
 // This is the constructor for the bitmoji
 
 Bitmoji.prototype.left = function() {
-    this.img = getImage("creatures/Hopper-Happy");
+
     this.x -= 5;
 };
 
 Bitmoji.prototype.right = function() {
-    this.img = getImage("creatures/Hopper-Happy");
+
     this.x += 5;
 };
 
-var bitmoji = new Bitmoji(200, 300);
+var bitmoji = new Bitmoji(200, 500);
 
 for(var i = 0; i< numDrops;++i){
-    yPositions.push(random(0,400));
-    xPositions.push(random(0,400));
+    yPositions.push(random(0,600));
+    xPositions.push(random(0,600));
     dropColors.push(color(255, 255, 255));
     dropSpeeds.push(-2);
 }
 
 mouseClicked = function(){
-    yPositions.push(random(0,400));
-    xPositions.push(random(0,400));
+    yPositions.push(random(0,600));
+    xPositions.push(random(0,600));
 };
 
 var createShot = function(x,y){
@@ -82,19 +82,6 @@ var createShot = function(x,y){
     ellipse(x,y,10,10);
 };
 
-
-
-var Shot = function(x, y) {
-    this.x = x;
-    this.y = y;
-};
-
-Shot.prototype.draw = function() {
-    this.x = constrain(this.x, 30, 370);
-    createShot (this.x, this.y, 50);
-};
-
-var shot = new Shot(200, 300);
 
 var gameScene = function(){
         background(4, 8, 46);
@@ -107,7 +94,7 @@ var gameScene = function(){
         yPositions[i] += 5;
         yPositions[i] += dropSpeeds[i]; 
         
-        yPositions[i] = yPositions[i] %  400;
+        yPositions[i] = yPositions[i] %  600;
     }
 
     if (keyIsPressed && keyCode === LEFT) {
@@ -118,9 +105,6 @@ var gameScene = function(){
     }
      bitmoji.draw();
      
-     if (keyIsPressed && key.code === 32) {
-        shot();
-    }
 };
 
 draw = function() {
