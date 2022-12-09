@@ -1,10 +1,12 @@
+var currentScene= 0;
+
 var xPositions = [];
 var yPositions = [];
 var dropColors = [];
 var dropSpeeds = [];
 var numDrops = 100;
-var currentScene= 0;
-var shoot =  500;
+
+
 
 var enemyX = 200;
 var enemyY = 51;
@@ -14,34 +16,38 @@ var enemyShot = false;
 
 var characterX = 200;
 var characterY = 556;
-var characterVelX = 0;
+var shoot =  500;
 
-var drawChar = function(characterX,characterY){
+var numEnemy= 10;
+ var enemySpeed= round(random(0.1,1));
+var originalSpeed = enemySpeed;
+
+var drawPlayer = function(characterX,characterY){
     //left wing
     strokeWeight(2.5);
-    stroke(194, 116, 194);
-    fill(255, 255, 255);
+    stroke(0, 0, 0);
+    fill(77, 77, 77);
     rect(characterX-40,characterY-20,22,20);
-    fill(137, 237, 250);
+    fill(77, 77, 77);
     triangle(characterX+-29,characterY+-107, characterX+-63, characterY+-41,characterX+-42, characterY+-36);
-    fill(255, 255, 255);
+    fill(77, 77, 77);
     rect(characterX-50,characterY-30,22,20);
     rect(characterX-61,characterY-42,22,20);
     //right wing
     rect(characterX+20,characterY-21,22,20);
-    fill(137, 237, 250);
+    fill(77, 77, 77);
     triangle(characterX+33,characterY+-107, characterX+40, characterY+-41,characterX+65, characterY+-34);
-    fill(255, 255, 255);
+    fill(77, 77, 77);
     rect(characterX+32,characterY-30,22,20);
     rect(characterX+40,characterY-42,22,20);
-    fill(255, 234, 0);
+    fill(18, 17, 1);
     noStroke();
     triangle(characterX+-58,characterY+-24,characterX+-49,characterY+-42,characterX+-39,characterY+-24);
     triangle(characterX+61,characterY+-24,characterX+51,characterY+-42,characterX+42,characterY+-24);
     //pilot seat
     fill(0, 0, 0);
     ellipse(characterX,characterY,40,44);
-    fill(255, 0, 0);
+    fill(156, 0, 0);
     ellipse(characterX,characterY+-16,23,11);
     strokeWeight(4);
     stroke(173, 173, 173);
@@ -49,21 +55,9 @@ var drawChar = function(characterX,characterY){
     line(characterX+9,characterY+-10, characterX+9, characterY+16);
     };
 
-var drawEnemy = function(x,y) {
-    fill(0, 255, 17);
-    stroke(0, 0, 0);
-    strokeWeight(3);
-    rect(x,y,40,30);
-    strokeWeight(5);
-    point(x+10,y+8);
-    point(x+30,y+8);
-    noFill();
-    strokeWeight(3);
-    arc(x+20,y+20,30,10,180,360);
-};
 
 var createPlayer = function(characterX,characterY){
-    drawChar(characterX,characterY);
+    drawPlayer(characterX,characterY);
 };
 
 var Player = function(x, y) {
@@ -87,8 +81,35 @@ Player.prototype.right = function() {
     this.x += 5;
 };
 
-var player = new Player(200, 500);
+var player = new Player(200, 550);
 
+//Enemy
+var Enemy = function(x, y) {
+    this.x = x;
+    this.y = y;
+};
+
+Enemy.prototype.draw = function() {
+    fill(0, 255, 17);
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    rect(this.x,this.y,40,30);
+    strokeWeight(5);
+    point(this.x+10,this.y+8);
+    point(this.x+30,this.y+8);
+    noFill();
+    strokeWeight(3);
+    arc(this.x+20,this.y+20,30,10,180,360);
+};
+
+
+
+var enemy = [];
+for (var i = 0; i < numEnemy; i++) {  
+    enemy.push(new Enemy(random(0, 600),random(0, 20)));
+}
+
+//Background
 for(var i = 0; i< numDrops;++i){
     yPositions.push(random(0,600));
     xPositions.push(random(0,600));
@@ -110,7 +131,7 @@ var gameScene = function(){
       
     for (var i = 0; i < xPositions.length; i++) {
         fill(dropColors[i]);
-        ellipse(xPositions[i], yPositions[i], 8,9);
+        ellipse(xPositions[i], yPositions[i], 6,7);
         yPositions[i] += 5;
         yPositions[i] += dropSpeeds[i]; 
         
@@ -137,6 +158,11 @@ var gameScene = function(){
     fill(255, 255, 255);
     noStroke();
     player.draw();
+    
+    for (var i = 0; i < enemy.length; i++) {
+        enemy[i].draw();
+        enemy[i].y += enemySpeed;
+    }
 };
 
 draw = function() {
