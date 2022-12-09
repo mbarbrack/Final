@@ -1,0 +1,216 @@
+var bulletChoice = 2;
+var characterX = 200;
+var characterY = 556;
+var characterVelX = 0;
+
+//Lets Make some variables for your bullet
+var bulletX = characterX;
+var bulletY = -20;// make the bullet start offscreen so you don't shoot when you start.
+var bulletVelY = -10; //negative so it goes up
+
+//Lets Make some variables for your bullet
+var shotX = characterX;
+var shotY = -20;// make the bullet start offscreen so you don't shoot when you start.
+var shotVelY = -10; //negative so it goes up
+
+//Lets Make some variables for your bullet
+var b2X = characterX;
+var b2Y = -20;// make the bullet start offscreen so you don't shoot when you start.
+var b2VelY = -10; //negative so it goes up
+
+var enemyX = 200;
+var enemyY = 51;
+var enemyVelocityX = 2;
+var enemyVelocityY = 0;
+var enemyShot = false;
+
+//seen this before haven't you?
+var drawBullet = function(x,y){
+    fill(0, 0, 0);
+    stroke(255, 0, 255);
+    ellipse(x,y,20,20);
+};
+var drawBullet2 = function(x,y){
+    fill(43, 0, 255);
+    stroke(255, 0, 255);
+    ellipse(x,y,20,20);
+};
+var shot = function(x,y){
+    fill(255, 255, 255);
+    stroke(255, 0, 255);
+    ellipse(x,y,20,20);
+};
+var drawEnemy = function(x,y) {
+    fill(0, 255, 17);
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    rect(x,y,40,30);
+    strokeWeight(5);
+    point(x+10,y+8);
+    point(x+30,y+8);
+    noFill();
+    strokeWeight(3);
+    arc(x+20,y+20,30,10,180,360);
+};
+var drawChar = function(){
+//left wing
+strokeWeight(2.5);
+stroke(194, 116, 194);
+fill(255, 255, 255);
+rect(characterX-40,characterY-20,22,20);
+fill(137, 237, 250);
+triangle(characterX+-29,characterY+-107, characterX+-63, characterY+-41,characterX+-42, characterY+-36);
+fill(255, 255, 255);
+rect(characterX-50,characterY-30,22,20);
+rect(characterX-61,characterY-42,22,20);
+//right wing
+rect(characterX+20,characterY-21,22,20);
+fill(137, 237, 250);
+triangle(characterX+33,characterY+-107, characterX+40, characterY+-41,characterX+65, characterY+-34);
+fill(255, 255, 255);
+rect(characterX+32,characterY-30,22,20);
+rect(characterX+40,characterY-42,22,20);
+fill(255, 234, 0);
+noStroke();
+triangle(characterX+-58,characterY+-24,characterX+-49,characterY+-42,characterX+-39,characterY+-24);
+triangle(characterX+61,characterY+-24,characterX+51,characterY+-42,characterX+42,characterY+-24);
+//pilot seat
+fill(0, 0, 0);
+ellipse(characterX,characterY,40,44);
+fill(255, 0, 0);
+ellipse(characterX,characterY+-16,23,11);
+strokeWeight(4);
+stroke(173, 173, 173);
+line(characterX+-9,characterY+-11, characterX+-9, characterY+16);
+line(characterX+9,characterY+-10, characterX+9, characterY+16);
+};
+var updateChar = function() {
+    
+    if(characterX<0 && characterVelX <0)
+    {
+        characterVelX = 0;
+    }
+    if(characterX>600 && characterVelX >0)
+    {
+        characterVelX = 0;
+    }
+    characterX += characterVelX;
+};
+
+
+ var xPositions = [];
+var yPositions = [];
+var dropColors = [];
+var dropSpeeds = [];
+var numDrops = 100;
+var currentScene= 0;
+for(var i = 0; i< numDrops;++i){
+    yPositions.push(random(0,600));
+    xPositions.push(random(0,600));
+    dropColors.push(color(255, 255, 255));
+    dropSpeeds.push(-2);
+}
+var stars = function(){
+        background(4, 8, 46);
+    noStroke();
+    
+      
+    for (var i = 0; i < xPositions.length; i++) {
+        fill(dropColors[i]);
+        ellipse(xPositions[i], yPositions[i], 8,9);
+        yPositions[i] += 5;
+        yPositions[i] += dropSpeeds[i]; 
+        
+        yPositions[i] = yPositions[i] %  600;
+    }
+
+     
+
+};
+
+
+var draw = function() {
+    println(bulletChoice);
+    background(255, 0, 0);
+     drawChar();
+     updateChar();
+     
+     //This is turning the enemy into a hit box
+     //kinda like a button that the bullet presses if it gets hit.
+     if(enemyX<bulletX&&enemyX+40>bulletX&&enemyY<bulletY&&enemyY+30>bulletY){
+        enemyShot = true;
+     }
+       if(enemyX<shotX&&enemyX+40>shotX&&enemyY<shotY&&enemyY+30>shotY){
+         enemyShot = true;
+     }
+     
+     
+     //What does this if statement test, is there a better way to do it
+     if(enemyShot === false){
+        drawEnemy(enemyX,enemyY);
+     }
+     enemyX += enemyVelocityX;
+     enemyY += enemyVelocityY;
+     if(enemyX<0){
+      enemyVelocityX *= -1;
+     }else if(enemyX>560)
+     {
+      enemyVelocityX *= -1;
+     }
+     
+    
+    
+    
+     
+    
+         shot(shotX,shotY);
+     shotY+=shotVelY;
+         drawBullet(bulletX,bulletY);
+     bulletY+=bulletVelY;
+     drawBullet2(b2X,b2Y);
+     b2Y+=b2VelY;
+
+     
+
+
+     
+};
+keyPressed = function(){
+    if(keyCode === LEFT)
+    {
+        characterVelX = -2;
+    }
+    if(keyCode === RIGHT)
+    {
+        characterVelX = 2;
+    } 
+    if(keyCode === DOWN)
+    {
+        bulletX = characterX;
+        bulletY = characterY;
+        bulletChoice = 1;
+    }
+        if(keyCode === 32)
+    { 
+        shotX = characterX;
+        shotY = characterY;
+        bulletChoice = 0;
+    }
+    
+
+
+};
+keyReleased = function(){
+    if(keyIsPressed && keyCode === LEFT)
+    {
+        characterVelX = 0;
+    }
+    if(keyCode === RIGHT)
+    {
+        characterVelX = 0;
+    } 
+
+
+
+};
+
