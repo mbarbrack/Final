@@ -1,0 +1,123 @@
+var player = function(x,y){
+
+//left wing
+rect(135+x,200+y,22,20);
+fill(0, 0, 0);
+triangle(111+x, 180+y, 132+x, 192+y, 138+x, 110+y);
+fill(255, 255, 255);
+rect(125+x,185+y,22,20);
+rect(113+x,175+y,22,20);
+//right wing
+rect(193+x,200+y,22,20);
+fill(0, 0, 0);
+triangle(235+x, 180+y, 212+x, 192+y, 209+x, 110+y);
+fill(255, 255, 255);
+rect(203+x,185+y,22,20);
+rect(216+x,175+y,22,20);
+fill(255, 240, 76);
+triangle(117+x,195+y,131+x,195+y,125+x,174+y);
+triangle(236+x,195+y,221+x,195+y,229+x,174+y);
+//pilot seat
+fill(0, 0, 0);
+ellipse(174+x,210+y,40,44);
+fill(255, 0, 0);
+ellipse(174+x,194+y,23,11);
+strokeWeight(4);
+stroke(173, 173, 173);
+line(164+x, 198+y, 164+x, 227+y);
+line(183+x, 199+y, 183+x, 227+y);
+};
+
+
+var xPositions = [];
+var yPositions = [];
+var dropColors = [];
+var dropSpeeds = [];
+var numDrops = 100;
+var currentScene= 0;
+var shoot =  500;
+
+var createBitmoji = function(x,y){
+    player(x,y-200);
+    noStroke();
+    fill(189, 104, 6);
+};
+
+var Bitmoji = function(x, y, z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  
+};
+
+Bitmoji.prototype.draw = function() {
+    this.x = constrain(this.x, -100, 360);
+    createBitmoji (this.x, this.y, 50);
+};
+
+Bitmoji.prototype.left = function() {
+
+    this.x -= 5;
+};
+
+Bitmoji.prototype.right = function() {
+
+    this.x += 5;
+};
+
+var bitmoji = new Bitmoji(200, 500);
+
+for(var i = 0; i< numDrops;++i){
+    yPositions.push(random(0,600));
+    xPositions.push(random(0,600));
+    dropColors.push(color(255, 255, 255));
+    dropSpeeds.push(-2);
+}
+
+mouseClicked = function(){
+    yPositions.push(random(0,600));
+    xPositions.push(random(0,600));
+};
+
+
+
+var gameScene = function(){
+        background(4, 8, 46);
+    noStroke();
+    
+      
+    for (var i = 0; i < xPositions.length; i++) {
+        fill(dropColors[i]);
+        ellipse(xPositions[i], yPositions[i], 8,9);
+        yPositions[i] += 5;
+        yPositions[i] += dropSpeeds[i]; 
+        
+        yPositions[i] = yPositions[i] %  600;
+    }
+
+    if (keyIsPressed && keyCode === LEFT) {
+        bitmoji.left();
+    } 
+    else if (keyIsPressed && keyCode === RIGHT){
+        bitmoji.right();
+    }
+    if(keyIsPressed && keyCode === UP) {
+        stroke(255, 0, 255);
+        fill(0, 0, 0);
+        ellipse(bitmoji.x+175, shoot,20,20);
+        shoot = shoot - 30;
+        if (shoot<5) {
+            shoot = 500;
+        }
+    }
+    fill(255, 255, 255);
+    noStroke();
+     bitmoji.draw();
+     
+};
+
+draw = function() {
+    if (currentScene === 0){
+        gameScene();
+    }
+};
