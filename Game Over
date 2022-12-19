@@ -1,0 +1,48 @@
+
+
+
+
+var numStars = 150;
+var star = function(x,y,sp,sz) {
+    this.x = random(0,400);
+    this.y = random(0,400);
+    this.speed = random(2,16);
+    this.size = random(1,4);
+};
+
+star.prototype.draw = function() {
+    fill(255, 255, 255);
+    noStroke();
+    ellipse(this.x,this.y,this.size,this.size);
+    this.y+=this.speed;
+    if(this.y > 600) {
+        this.y = 0;
+        this.x = random(0,600);
+        this.speed = random(2,16);
+        this.size = random(1,4);
+    }
+};
+
+var stars = [];
+for (var i = 0; i < numStars; i++) {  
+    stars.push(new star());
+}
+
+
+var gameOver = function(){
+
+   background(0, 0, 0);
+   fill(255, 0, 0);
+   textSize(60);
+   text("GAME OVER", 122,300);
+         for(var i = 0; i < numStars; i++) {
+        stars[i].draw();
+    }
+
+};
+
+
+draw = function() {
+ gameOver();
+
+};
