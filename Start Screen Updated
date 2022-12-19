@@ -1,0 +1,247 @@
+var numStars = 150;
+var characterX = 200;
+var characterY = 556;
+var shipSpeed=random(1,5);
+
+var star = function(x,y,sp,sz) {
+    this.x = random(0,400);
+    this.y = random(0,400);
+    this.speed = random(2,16);
+    this.size = random(1,4);
+};
+
+star.prototype.draw = function() {
+    fill(255, 255, 255);
+    noStroke();
+    ellipse(this.x,this.y,this.size,this.size);
+    this.y+=this.speed;
+    if(this.y > 600) {
+        this.y = 0;
+        this.x = random(0,600);
+        this.speed = random(2,16);
+        this.size = random(1,4);
+    }
+};
+
+var stars = [];
+for (var i = 0; i < numStars; i++) {  
+    stars.push(new star());
+}
+
+//Stars background
+
+var drawBitmoji=function(bitmojiX,bitmojiY,bitmojiH){
+    //Neck
+    fill(255, 200, 145);
+    rect(bitmojiX-15*bitmojiH/100,bitmojiY+36*bitmojiH/100,29*bitmojiH/100,18*bitmojiH/100);
+
+    //Head
+    fill(255, 200, 145);
+    ellipse(bitmojiX+0*bitmojiH/100,bitmojiY-10*bitmojiH/100,87*bitmojiH/100,99*bitmojiH/100);
+    
+    //chin
+    fill(186, 122, 26);
+    line (bitmojiX-7*bitmojiH/100,bitmojiY+24*bitmojiH/100,bitmojiX+7*bitmojiH/100,bitmojiY+24*bitmojiH/100);
+
+
+
+    //Left Eyebrow
+    line(bitmojiX-29*bitmojiH/100,bitmojiY-35*bitmojiH/100,bitmojiX-9*bitmojiH/100,bitmojiY-33*bitmojiH/100);
+    line(bitmojiX-5*bitmojiH/100,bitmojiY-35*bitmojiH/100, bitmojiX-9*bitmojiH/100,bitmojiY-33*bitmojiH/100);
+    
+    //Rigth Eyebrow
+    line(bitmojiX+15*bitmojiH/100,bitmojiY-35*bitmojiH/100,bitmojiX+5*bitmojiH/100,bitmojiY-36*bitmojiH/100);
+    line(bitmojiX+28*bitmojiH/100,bitmojiY-38*bitmojiH/100,bitmojiX+15*bitmojiH/100,bitmojiY-35*bitmojiH/100);
+
+
+
+//Glasses
+    fill(255, 200, 145);
+    ellipse (bitmojiX+20*bitmojiH/100,bitmojiY-18*bitmojiH/100,31*bitmojiH/100,24*bitmojiH/100);
+    ellipse (bitmojiX-20*bitmojiH/100,bitmojiY-18*bitmojiH/100,31*bitmojiH/100,24*bitmojiH/100);
+    line(bitmojiX+5*bitmojiH/100,bitmojiY-19*bitmojiH/100,bitmojiX-6*bitmojiH/100,bitmojiY-20*bitmojiH/100);
+    line(bitmojiX+42*bitmojiH/100,bitmojiY-25*bitmojiH/100,bitmojiX+34*bitmojiH/100,bitmojiY-15*bitmojiH/100);
+    line(bitmojiX-43*bitmojiH/100,bitmojiY-26*bitmojiH/100,bitmojiX-35*bitmojiH/100,bitmojiY-21*bitmojiH/100);
+
+
+
+      //Left Ear
+    fill(255, 200, 145);
+    arc(bitmojiX-44*bitmojiH/100,bitmojiY-7*bitmojiH/100,13*bitmojiH/100,29*bitmojiH/100,80,277);
+    
+    //Right Ear
+    fill(255, 200, 145);
+    arc(bitmojiX+45*bitmojiH/100,bitmojiY-7*bitmojiH/100,13*bitmojiH/100,29*bitmojiH/100,-124,120);
+
+
+     //Hair
+    fill(87, 38, 38);
+    arc(bitmojiX-39*bitmojiH/100,bitmojiY-33*bitmojiH/100,11*bitmojiH/100,28*bitmojiH/100,100,334);
+    arc(bitmojiX+39*bitmojiH/100,bitmojiY-33*bitmojiH/100,11*bitmojiH/100,28*bitmojiH/100,-147,113);
+
+
+ //Nose
+    stroke(0, 0, 0);
+    fill(255, 200, 145);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY+0*bitmojiH/100+1,6*bitmojiH/100,9*bitmojiH/100,19,150);
+    arc(bitmojiX+5*bitmojiH/100,bitmojiY+5*bitmojiH/100,6*bitmojiH/100,-12*bitmojiH/100,14,150);
+    arc(bitmojiX-5*bitmojiH/100,bitmojiY+5*bitmojiH/100,6*bitmojiH/100,-12*bitmojiH/100,14,150);
+    line(bitmojiX+9*bitmojiH/100,bitmojiY+3*bitmojiH/100,bitmojiX+6*bitmojiH/100,bitmojiY-4*bitmojiH/100);
+    line(bitmojiX-9*bitmojiH/100,bitmojiY+3*bitmojiH/100,bitmojiX-5*bitmojiH/100,bitmojiY-4*bitmojiH/100);
+    arc(bitmojiX+4*bitmojiH/100,bitmojiY-17*bitmojiH/100,3*bitmojiH/100,17*bitmojiH/100,89,259);
+
+
+
+    //Mouth
+    fill(255, 255, 255);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY+12*bitmojiH/100,31*bitmojiH/100,10*bitmojiH/100, -16, 186);
+    line(bitmojiX-18*bitmojiH/100,bitmojiY+11*bitmojiH/100,bitmojiX+16*bitmojiH/100,bitmojiY+12*bitmojiH/100);
+
+
+
+    
+//Shirt
+    noStroke();
+    fill(83, 99, 219);
+    ellipse(bitmojiX+3*bitmojiH/100,bitmojiY+77*bitmojiH/100,84*bitmojiH/100,51*bitmojiH/100);
+    rect(bitmojiX-39*bitmojiH/100,bitmojiY+75*bitmojiH/100,84*bitmojiH/100,28*bitmojiH/100);
+    stroke(0, 0, 0);
+
+
+
+    //Intials on Shirt
+    //M
+    line(bitmojiX-24*bitmojiH/100,bitmojiY+67*bitmojiH/100,bitmojiX-26*bitmojiH/100,bitmojiY+85*bitmojiH/100);
+    line(bitmojiX-24*bitmojiH/100,bitmojiY+66*bitmojiH/100,bitmojiX-12*bitmojiH/100,bitmojiY+85*bitmojiH/100);
+    line(bitmojiX-6*bitmojiH/100,bitmojiY+66*bitmojiH/100,bitmojiX-12*bitmojiH/100,bitmojiY+85*bitmojiH/100);
+    line(bitmojiX-6*bitmojiH/100,bitmojiY+66*bitmojiH/100,bitmojiX+3*bitmojiH/100,bitmojiY+85*bitmojiH/100);
+    //B
+    fill(83, 99, 219);
+    line(bitmojiX+14*bitmojiH/100,bitmojiY+66*bitmojiH/100,bitmojiX+14*bitmojiH/100,bitmojiY+86*bitmojiH/100);
+    arc(bitmojiX+16*bitmojiH/100,bitmojiY+81*bitmojiH/100,21*bitmojiH/100,11*bitmojiH/100,-89,90);
+    arc(bitmojiX+16*bitmojiH/100,bitmojiY+70*bitmojiH/100,21*bitmojiH/100,11*bitmojiH/100,-89,90);
+
+    //Hat
+    fill(73, 100, 235);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY-52*bitmojiH/100,80*bitmojiH/100,60*bitmojiH/100,174,366);
+    fill(102, 100, 100);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY-43*bitmojiH/100,84*bitmojiH/100,31*bitmojiH/100,178,361);
+    fill(255, 200, 145);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY-41*bitmojiH/100,68*bitmojiH/100,16*bitmojiH/100,169,361);
+    line(bitmojiX-42*bitmojiH/100,bitmojiY-43*bitmojiH/100,bitmojiX-33*bitmojiH/100,bitmojiY-43*bitmojiH/100);
+    line(bitmojiX+40*bitmojiH/100,bitmojiY-43*bitmojiH/100,bitmojiX+31*bitmojiH/100,bitmojiY-44*bitmojiH/100);
+
+        //Right Eye
+    fill(255, 255, 255);
+    ellipse (bitmojiX+20*bitmojiH/100,bitmojiY-18*bitmojiH/100,18*bitmojiH/100,15*bitmojiH/100);
+    fill(117, 82, 82);
+    ellipse (bitmojiX+20*bitmojiH/100,bitmojiY-18*bitmojiH/100,7*bitmojiH/100,7*bitmojiH/100);
+    
+    //Left Eye
+    fill(255, 255, 255);
+    ellipse (bitmojiX-20*bitmojiH/100,bitmojiY-18*bitmojiH/100,18*bitmojiH/100,15*bitmojiH/100);
+    fill(117, 82, 82);
+    ellipse (bitmojiX-20*bitmojiH/100,bitmojiY-18*bitmojiH/100,7*bitmojiH/100,7*bitmojiH/100);
+};
+
+var drawME=function(mattx,matty,h){
+    stroke(0);
+    fill(255, 243, 209);
+    quad(mattx+-34*h/224,matty+89*h/203,mattx+46*h/204,matty+76*h/200,mattx+51*h/219,matty+149*h/219,mattx+-30*h/219,matty+150*h/219);
+    fill(255, 255, 255);
+    quad(mattx+137*h/219,matty+130*h/207,mattx+148*h/219,matty+364*h/219,mattx+28*h/219,matty+368*h/219,mattx+-10*h/219,matty+124*h/204);
+    quad(mattx+-124*h/200,matty+133*h/212,mattx+-137*h/219,matty+364*h/219,mattx+-56*h/219,matty+363*h/219,mattx+50*h/219,matty+120*h/196);
+    rect(mattx+-97*h/201, matty+118*h/199, 200*h/195, 300*h/219, 200*h/219);//body
+    //head
+    noStroke();
+    fill(255, 243, 209);
+    ellipse(mattx+5, matty+-4, 200*h/219, 224*h/219);//head
+    stroke(0, 0, 0);
+    ellipse(mattx-34*h/219, matty-20*h/219, 35*h/219, 25*h/219);//left eye
+    ellipse(mattx+34*h/219, matty-20*h/219, 17*h/219, 25*h/219);//left eye
+    fill(255,255,255);
+    ellipse(mattx-34*h/219, matty-20*h/219, 35*h/219, 14*h/219);//left
+    fill(255,243,209);
+    ellipse(mattx+34*h/219, matty-20*h/219, 35*h/219, 25*h/219);//right
+    fill(255,255,255);
+    ellipse(mattx+34*h/219, matty-20*h/219, 35*h/219, 14*h/219);//left
+    fill(0, 160, 200);
+    ellipse(mattx-34*h/219, matty-20*h/219, 14*h/219, 14*h/219);//left eye
+    ellipse(mattx-34*h/219, matty-20*h/219, 2*h/219, 5*h/219);//left
+    fill(0, 160, 200);
+    ellipse(mattx+34*h/219, matty-20*h/219, 15*h/219, 13*h/219);//left
+    ellipse(mattx+34*h/219, matty-20*h/219, 2*h/219, 5*h/219);//left
+    line(mattx+19*h/219,matty+-44*h/219,mattx+55*h/219, matty+-39*h/219);
+    line(mattx+-51*h/219,matty+-37*h/219,mattx+-17*h/219, matty+-42*h/219);
+    noStroke();
+    fill(196, 165, 104);
+    quad(mattx+-84*h/219,matty+-56*h/219,mattx+-44*h/219,matty-100*h/196,mattx+45*h/219,matty+-103*h/192,mattx+-6*h/219,matty+-73*h/219);
+    quad(mattx+-46*h/219,matty+-101*h/219,mattx+-44*h/219,matty-100*h/219,mattx+45*h/219,matty+-103*h/219,mattx+-6*h/219,matty+-111*h/191);
+    quad(mattx+-84*h/150,matty+-56*h/234,mattx+-73*h/210,matty-76*h/173,mattx+-45*h/219,matty+-97*h/219,mattx+-6*h/219,matty+-73*h/200);
+    quad(mattx+-100*h/219,matty+-56*h/219,mattx+-100*h/219,matty-76*h/219,mattx+12*h/219,matty+-97*h/219,mattx+-16*h/219,matty+-73*h/219);
+    quad(mattx+-123*h/219,matty+-56*h/219,mattx+-31*h/219,matty-113*h/197,mattx+66*h/219,matty+-102*h/219,mattx+2*h/219,matty+-113*h/219);
+    quad(mattx+98*h/200,matty+-33*h/184,mattx+59*h/219,matty-91*h/219,mattx+29*h/196,matty+-103*h/187,mattx+60*h/194,matty+-60*h/194);
+    quad(mattx+98*h/196,matty+-35*h/219,mattx+68*h/191,matty-91*h/193,mattx+36*h/219,matty+-103*h/194,mattx+60*h/187,matty+-60*h/219);
+    stroke(0, 0, 0);
+    strokeWeight(1);
+    fill(255,243,209);
+    bezier(mattx+2*h/220, matty+38*h/216, mattx+49*h/227, matty+49*h/225, mattx+11*h/210, matty+15*h/220, mattx, matty-1*h/219);
+    fill(255, 255, 255);
+    arc(mattx+2*h/220, matty+51*h/200, 74*h/200, 34*h/204, 0, 180);
+    line(mattx-38*h/220,matty+56*h/219,mattx+40*h/217, matty+56*h/220);
+};
+//Bitmoji Functions
+
+var drawTIE = function(characterX,characterY){
+    //left wing
+    strokeWeight(2.5);
+    stroke(0, 0, 0);
+    fill(77, 77, 77);
+    rect(characterX-40,characterY-20,22,20);
+    fill(77, 77, 77);
+    triangle(characterX+-29,characterY+-107, characterX+-63, characterY+-41,characterX+-42, characterY+-36);
+    fill(77, 77, 77);
+    rect(characterX-50,characterY-30,22,20);
+    rect(characterX-61,characterY-42,22,20);
+    //right wing
+    rect(characterX+20,characterY-21,22,20);
+    fill(77, 77, 77);
+    triangle(characterX+33,characterY+-107, characterX+40, characterY+-41,characterX+65, characterY+-34);
+    fill(77, 77, 77);
+    rect(characterX+32,characterY-30,22,20);
+    rect(characterX+40,characterY-42,22,20);
+    fill(18, 17, 1);
+    noStroke();
+    triangle(characterX+-58,characterY+-24,characterX+-49,characterY+-42,characterX+-39,characterY+-24);
+    triangle(characterX+61,characterY+-24,characterX+51,characterY+-42,characterX+42,characterY+-24);
+    //pilot seat
+    fill(0, 0, 0);
+    ellipse(characterX,characterY,40,44);
+    fill(156, 0, 0);
+    ellipse(characterX,characterY+-16,23,11);
+    strokeWeight(4);
+    stroke(173, 173, 173);
+    line(characterX+-9,characterY+-11, characterX+-9, characterY+16);
+    line(characterX+9,characterY+-10, characterX+9, characterY+16);
+    };
+//Ship 1 
+
+var startScreen= function(){
+        background(0, 0, 0);
+        var f = createFont("monospace");
+        textFont(f);
+        fill(159, 255, 150);
+        textSize(40);
+        text("Galaga", 230, 150);
+        textSize(20);
+        text("By Matt Barbrack and Matt Boekamp", 95, 190);
+    for(var i = 0; i < numStars; i++) {
+        stars[i].draw();
+        drawTIE();
+    }
+};
+//Start Screen
+
+draw = function() {
+    startScreen();
+};
