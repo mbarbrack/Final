@@ -1,0 +1,438 @@
+var currentScene= 0;
+
+var xPositions = [];
+var yPositions = [];
+var dropColors = [];
+var dropSpeeds = [];
+var numDrops = 100;
+
+
+
+
+
+var characterX = 200;
+var characterY = 556;
+
+var numEnemy= 10;
+ var enemySpeed= round(random(1,2));
+var originalSpeed = enemySpeed;
+
+var drawPlayer = function(characterX,characterY){
+    //left wing
+    strokeWeight(2.5);
+    stroke(0, 0, 0);
+    fill(77, 77, 77);
+    rect(characterX-40,characterY-20,22,20);
+    fill(77, 77, 77);
+    triangle(characterX+-29,characterY+-107, characterX+-63, characterY+-41,characterX+-42, characterY+-36);
+    fill(77, 77, 77);
+    rect(characterX-50,characterY-30,22,20);
+    rect(characterX-61,characterY-42,22,20);
+    //right wing
+    rect(characterX+20,characterY-21,22,20);
+    fill(77, 77, 77);
+    triangle(characterX+33,characterY+-107, characterX+40, characterY+-41,characterX+65, characterY+-34);
+    fill(77, 77, 77);
+    rect(characterX+32,characterY-30,22,20);
+    rect(characterX+40,characterY-42,22,20);
+    fill(18, 17, 1);
+    noStroke();
+    triangle(characterX+-58,characterY+-24,characterX+-49,characterY+-42,characterX+-39,characterY+-24);
+    triangle(characterX+61,characterY+-24,characterX+51,characterY+-42,characterX+42,characterY+-24);
+    //pilot seat
+    fill(0, 0, 0);
+    ellipse(characterX,characterY,40,44);
+    fill(156, 0, 0);
+    ellipse(characterX,characterY+-16,23,11);
+    strokeWeight(4);
+    stroke(173, 173, 173);
+    line(characterX+-9,characterY+-11, characterX+-9, characterY+16);
+    line(characterX+9,characterY+-10, characterX+9, characterY+16);
+    };
+var createPlayer = function(characterX,characterY){
+    drawPlayer(characterX,characterY);
+};
+var Player = function(x, y) {
+    this.x = x;
+    this.y = y;
+  
+};
+Player.prototype.draw = function() {
+    this.x = constrain(this.x, 70, 530);
+    createPlayer (this.x, this.y, 50);
+};
+Player.prototype.left = function() {
+
+    this.x -= 5;
+};
+Player.prototype.right = function() {
+
+    this.x += 5;
+};
+var player = new Player(200, 550);
+
+
+
+
+//enemy/bullets
+var lives = 2;
+var last_lives = 0;
+var score = 0;
+var last_score = 0;
+var enemies = [];
+var eRandom = 0;
+var eSize = 30; 
+var eSpeed = 3;
+var missed = 0;
+var bullets = [];
+var bullets_drawn = 0;
+var bullets_fired = 0;
+var bullets_hit = 0;
+var bullets_missed = 0;
+var t = 0;
+var fired = false;
+var x = 200; 
+var y = 350; 
+var x_speed = 0;
+var hit = false; 
+
+var timer = function() {
+
+    t += 1;
+
+
+    if (t % 4 === 0 && fired === true) {
+
+        fired = false;
+
+        t = 0;
+
+    }
+
+    if (t % 30 === 0 && hit === true) {
+
+        hit = false;
+
+        t = 0;
+
+    }
+
+};
+
+
+
+
+
+var enemy_draw = function(imageX, imageY) {
+
+    // Enemy
+
+    fill(0, 255, 0);
+
+    ellipse(imageX, imageY, eSize, eSize);
+
+    ellipse(imageX + 15, imageY - 10, 15, eSize);
+
+    ellipse(imageX - 15, imageY - 10, 15, eSize);
+
+};
+
+var bullet_draw = function(imageX, imageY) {
+
+    // Bullet
+
+    fill(255, 0, 0);
+
+    ellipse(imageX, imageY, 9, 9);
+
+};
+
+
+
+
+
+
+var enemy_handler = function() {
+
+    for (var i = 0; i < enemies.length; i += 1) {
+
+        // move the enemy
+
+        enemies[i].x += enemies[i].xSpeed;
+
+        enemies[i].y += eSpeed;
+
+        // draw the enemy
+
+        enemy_draw(enemies[i].x, enemies[i].y);
+
+        // put enemies that are shot back at the top
+
+        for (var j = 0; j < bullets.length; j += 1) {
+
+            var distance = dist(bullets[j].x, bullets[j].y, enemies[i].x, enemies[i].y);
+
+            if (distance < eSize) {
+
+                enemies[i].y = random(1, -20);
+
+                enemies[i].x = random(10, 390);
+
+                bullets.splice(j, 1);
+
+                bullets_fired += 1;
+
+                bullets_hit ++;
+
+                score += 10;
+
+                j --;
+
+            }
+
+            // delete bullets that go off screen
+
+            else if (bullets[j].y < 0) {
+
+                bullets.splice(j, 1);
+
+                bullets_fired += 1;
+
+                bullets_missed ++;
+
+                j --;
+
+            }
+
+        }
+
+        // if an enemy hits the player
+
+        if (dist(x, y, enemies[i].x, enemies[i].y) < eSize && hit === false) {
+
+            enemies[i].y = random(1, -20);
+
+            enemies[i].x = random(10, 390);
+
+            x_speed = 0;
+
+            lives --;
+
+            hit = true;
+
+        }
+
+        // put enemies that leave the screen back at the top
+
+        if (enemies[i].x > 400 || enemies[i].x < 0 || enemies[i].y > 420) {
+
+            enemies[i].y = random(1, -20);
+
+            enemies[i].x = random(10, 390);
+
+            missed++;
+
+        }
+
+    }
+
+    if (score % 300 === 0 && score > 0 && eSpeed < 6 && score !== last_score) {
+
+        eSpeed += 3;
+
+        last_score = score;
+
+    }
+    
+    if (score % 1000 === 0 && score > 0 && lives < 5 && score !== last_lives) {
+
+        lives += 1;
+
+        last_lives = score;
+
+    }
+
+};
+
+var bullet_handler = function() {
+
+    bullets_drawn = 0;
+
+    for (var i = 0; i < bullets.length; i += 1) {
+
+        // move the bullet
+
+        bullets[i].x += bullets[i].xSpeed;
+
+        bullets[i].y += bullets[i].ySpeed;
+
+        // draw the bullet
+
+        bullets_drawn += 1;
+
+        bullet_draw(bullets[i].x, bullets[i].y);
+
+    }
+
+    if (fired === true) {
+
+        timer();
+
+    }
+
+};
+
+
+
+
+
+
+var new_enemy = function() {
+
+    enemy_handler();
+
+    eRandom = random(1, 20);
+
+    eRandom = round(eRandom);
+
+    var newEnemy = {
+
+        x: random(10, 390),
+
+        y: random(1, -20),
+
+        xSpeed: 0,
+
+        ySpeed: 0
+
+    };
+
+    if (eRandom === 10 && enemies.length < 4) {
+
+        enemies.push(newEnemy);
+
+    }
+
+};
+
+
+
+
+
+
+
+
+
+//Background
+var numStars = 150;
+var star = function(x,y,sp,sz) {
+    this.x = random(0,400);
+    this.y = random(0,400);
+    this.speed = random(2,16);
+    this.size = random(1,4);
+};
+
+star.prototype.draw = function() {
+    fill(255, 255, 255);
+    noStroke();
+    ellipse(this.x,this.y,this.size,this.size);
+    this.y+=this.speed;
+    if(this.y > 600) {
+        this.y = 0;
+        this.x = random(0,600);
+        this.speed = random(2,16);
+        this.size = random(1,4);
+    }
+};
+
+var stars = [];
+for (var i = 0; i < numStars; i++) {  
+    stars.push(new star());
+}
+
+
+
+
+var gameScene = function(){
+ background(0, 0, 0);
+    for(var i = 0; i < numStars; i++) {
+        stars[i].draw();
+    }
+
+    if (keyIsPressed && keyCode === LEFT) {
+        player.left();
+    } 
+    else if (keyIsPressed && keyCode === RIGHT){
+        player.right();
+    }
+
+  
+     strokeWeight(2);
+
+    stroke(237, 0, 237);
+
+    new_enemy(); // Draw enemies
+
+    bullet_handler();
+    fill(255, 255, 255);
+    noStroke();
+    player.draw();
+
+};
+
+var keyPressed = function() {
+
+    if (keyCode === 37 && x_speed > -11 && hit === false) {
+
+        x_speed -= 11;
+
+    }
+
+    if (keyCode === 39 && x_speed < 11 && hit === false) {
+
+        x_speed += 11;
+
+    }
+
+
+};
+
+var keyReleased = function() {
+
+    if (keyCode === 39 || keyCode === 37) {
+
+        x_speed = 0;
+
+    }
+
+    if ((keyCode === 38 || keyCode === 32) && bullets.length < 900 && fired === false && hit === false) {
+
+        fired = true;
+
+        var newBullet = {
+
+            x: x,
+
+            y: y,
+
+            xSpeed: 0,
+
+            ySpeed: -5,
+
+            destroyed: false
+
+        };
+
+        bullets.push(newBullet);
+
+    }
+
+};
+
+
+draw = function() {
+    if (currentScene === 0){
+        gameScene();
+    }
+    
+};
