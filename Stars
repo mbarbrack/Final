@@ -1,36 +1,34 @@
-var xPositions = [];
-var yPositions = [];
-var dropColors = [];
-var dropSpeeds = [];
-var numDrops = 50;
-
-for(var i = 0; i< numDrops;++i){
-    yPositions.push(random(0,400));
-    xPositions.push(random(0,400));
-    dropColors.push(color(255, 255, 255), random(0,255), random(0,255));
-    dropSpeeds.push(-3);
-}
-
-mouseClicked = function(){
-    yPositions.push(random(0,400));
-    xPositions.push(random(0,400));
+var numStars = 150;
+var star = function(x,y,sp,sz) {
+    this.x = random(0,400);
+    this.y = random(0,400);
+    this.speed = random(2,16);
+    this.size = random(1,4);
 };
+
+star.prototype.draw = function() {
+    fill(255, 255, 255);
+    noStroke();
+    ellipse(this.x,this.y,this.size,this.size);
+    this.y+=this.speed;
+    if(this.y > 600) {
+        this.y = 0;
+        this.x = random(0,600);
+        this.speed = random(2,16);
+        this.size = random(1,4);
+    }
+};
+
+var stars = [];
+for (var i = 0; i < numStars; i++) {  
+    stars.push(new star());
+}
 
 
 draw = function() {
-    background(24, 32, 115);
-    noStroke();
-    
-    
-    for (var i = 0; i < xPositions.length; i++) {
-        fill(dropColors[i]);
-        ellipse(xPositions[i], yPositions[i], 8,9);
-        yPositions[i] += 5;
-        yPositions[i] += dropSpeeds[i]; 
-        
-        yPositions[i] = yPositions[i] %  400;
+    background(0, 0, 0);
+    for(var i = 0; i < numStars; i++) {
+        stars[i].draw();
     }
-
-     
-    
 };
+
