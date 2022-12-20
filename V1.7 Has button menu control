@@ -1,6 +1,3 @@
-//VARIABLES//
-
-
 var start = false;
 var lives = 2;
 var score = 0;
@@ -699,6 +696,7 @@ var gameOver = function(){
    fill(255, 0, 0);
    textSize(60);
    text("GAME OVER", 122,242);
+   text("Score: "+score, 110,313);
          for(var i = 0; i < numStars; i++) {
         stars[i].draw();
     }
