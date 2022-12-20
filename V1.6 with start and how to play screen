@@ -1,33 +1,20 @@
 //VARIABLES//
 
 
-var game_start = false;
-var show_dev_tools = false;
+var start = false;
 var lives = 2;
-var last_lives = 0;
 var score = 0;
-var last_score = 0;
 var enemies = [];
-var eRandom = 0;
-var eSize = 30; 
-var eSpeed = 3;
-var missed = 0;
+var enemyRandom = 0;
+var enemySize = 30; 
+var enemySpeed = 3;
 var bullets = [];
-var bullets_drawn = 0;
-var bullets_fired = 0;
-var bullets_hit = 0;
-var bullets_missed = 0;
-var stars = [];
 var t = 0;
 var fired = false;
 var x = 200; 
 var y = 550; 
 var x_speed = 0;
 var hit = false; 
-var intro = true;
-var how_to_play = false;
-var last_second = 0;
-var taunt = 0;
 var numStars = 150;
 var currentScene = 0;
 
@@ -106,9 +93,9 @@ var btn2 = new Button({
     }
 });
 var btn3 = new Button({
-    x: 31,
-    y: 491,
-    width:152,
+   x: 122,
+    y: 453,
+    width:81,
     label: "Play",
     onClick: function() {
         currentScene = 1;
@@ -149,11 +136,7 @@ var timer = function() {
 // END TIMER
 var draw_stats = function() {
 
-    // Stats
-
-    stroke(0, 0, 0);
-
-    strokeWeight(2);
+    // Score and Lives
 
     fill(156, 150, 150);
 
@@ -173,7 +156,8 @@ var player = function() {
 
     fill(24, 18, 224);
 
-    // Player
+    // creates Player design and the contraint and resets it 
+    //  after getting hit
  
     x += x_speed;
     x= constrain(x,70,530);
@@ -220,7 +204,7 @@ var player = function() {
 
 var enemy_draw = function(imageX, imageY) {
 
-    // Enemy
+    // draws Enemy design
 
     fill(0, 255, 0);
     stroke(0, 0, 0);
@@ -242,7 +226,7 @@ var enemy_draw = function(imageX, imageY) {
 
 var bullet_draw = function(imageX, imageY) {
 
-    // Bullet
+    // draws the bullest design
 
     fill(112, 110, 112);
     
@@ -262,7 +246,7 @@ var enemy_handler = function() {
 
         enemies[i].x += enemies[i].xSpeed;
 
-        enemies[i].y += eSpeed;
+        enemies[i].y += enemySpeed;
 
         // draw the enemy
 
@@ -274,7 +258,7 @@ var enemy_handler = function() {
 
             var distance = dist(bullets[j].x, bullets[j].y, enemies[i].x, enemies[i].y);
 
-            if (distance < eSize) {
+            if (distance < enemySize) {
 
                 enemies[i].y = random(1, -20);
 
@@ -282,9 +266,7 @@ var enemy_handler = function() {
 
                 bullets.splice(j, 1);
 
-                bullets_fired += 1;
 
-                bullets_hit ++;
 
                 score += 10;
 
@@ -298,9 +280,7 @@ var enemy_handler = function() {
 
                 bullets.splice(j, 1);
 
-                bullets_fired += 1;
 
-                bullets_missed ++;
 
                 j --;
 
@@ -310,7 +290,7 @@ var enemy_handler = function() {
 
         // if an enemy hits the player
 
-        if (dist(x, y, enemies[i].x, enemies[i].y) < eSize && hit === false) {
+        if (dist(x, y, enemies[i].x, enemies[i].y) < enemySize && hit === false) {
 
             enemies[i].y = random(1, -20);
 
@@ -332,15 +312,12 @@ var enemy_handler = function() {
 
             enemies[i].x = random(30, 570);
 
-            missed++;
-
         }
-         if (score % 300 === 0 && score > 0 && eSpeed < 6 && score !== last_score) {
+         if (score % 300 === 0 && score > 0 && enemySpeed < 6) {
 
-        eSpeed += 3;
+        enemySpeed += 3;
 
-        last_score = score;
-
+        
     }
 
     }
@@ -349,7 +326,6 @@ var enemy_handler = function() {
 
 var bullet_handler = function() {
 
-    bullets_drawn = 0;
 
     for (var i = 0; i < bullets.length; i += 1) {
 
@@ -360,7 +336,6 @@ var bullet_handler = function() {
 
         // draw the bullet
 
-        bullets_drawn += 1;
 
         bullet_draw(bullets[i].x, bullets[i].y);
 
@@ -380,9 +355,9 @@ var new_enemy = function() {
 
     enemy_handler();
 
-    eRandom = random(1, 20);
+    enemyRandom = random(1, 20);
 
-    eRandom = round(eRandom);
+    enemyRandom = round(enemyRandom);
 
     var newEnemy = {
 
@@ -396,7 +371,7 @@ var new_enemy = function() {
 
     };
 
-    if (eRandom === 20 && enemies.length < 20) {
+    if (enemyRandom === 20 && enemies.length < 20) {
 
         enemies.push(newEnemy);
 
@@ -495,7 +470,7 @@ var keyReleased = function() {
 
 };
 
-//Stars background
+//Bitmoji Functions
 
 var drawBitmoji=function(bitmojiX,bitmojiY,bitmojiH){
     //Neck
@@ -657,8 +632,6 @@ var drawME=function(mattx,matty,h){
     arc(mattx+2*h/220, matty+51*h/200, 74*h/200, 34*h/204, 0, 180);
     line(mattx-38*h/220,matty+56*h/219,mattx+40*h/217, matty+56*h/220);
 };
-//Bitmoji Functions
-
 var drawTIE = function(characterX,characterY){
     //left wing
     strokeWeight(2.5);
@@ -691,9 +664,9 @@ var drawTIE = function(characterX,characterY){
     line(characterX+-9,characterY+-11, characterX+-9, characterY+16);
     line(characterX+9,characterY+-10, characterX+9, characterY+16);
     };
-//Ship 1 
 
 var startScreen= function(){
+    //start screen and buttons
         background(0, 0, 0);
         var f = createFont("monospace");
         textFont(f);
@@ -711,7 +684,7 @@ var startScreen= function(){
 };
 
 var gameOver = function(){
-
+    // draw the game over scene and button
    background(0, 0, 0);
    fill(255, 0, 0);
    textSize(60);
@@ -751,7 +724,7 @@ var draw = function() {
     }
       if (lives <= 0) {
 
-        game_start = false;
+        start = false;
 
         gameOver();
 
