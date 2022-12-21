@@ -905,6 +905,13 @@ var spaceShipChoice = function(){
 
 var draw = function() {
 
+    background(0, 0, 0);
+    strokeWeight(2);
+    
+    for(var i = 0; i < numStars; i++) {
+        stars[i].draw();
+    }
+
     if (currentScene === 0){
         startScreen();
     }
