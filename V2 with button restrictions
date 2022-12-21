@@ -1,0 +1,994 @@
+//To view full game, change screen size settings from 400x400 to 600x600.
+
+var start = false;
+var lives = 2; //Sets number of intial lives to 2
+var score = 0; //Sets intial score to 0
+var enemies = []; //Array for enemies
+var enemyRandom = 0; //Creates enemies in x values
+var enemySize = 30; //Location of the center of each enemy
+var enemySpeed = 3; //Speed at which enemy moves down screen
+var bullets = []; //Array for bullets
+var t = 0; //Creates a delay when hit
+var shoot = false; //Controls rate at which player can shoot
+var x = 200; //X value of spaceship
+var y = 550; //Y value of spaceship
+var xSpeed = 0; //intial value of speed without key being pressed
+var hit = false; //Determines if player has been hit by enemy
+var numStars = 150; //Number of background stars
+var currentScene = 0; //Sets intial scene to 0, changes after buttons are pressed
+var characterX = 200; //X value for TIE fighter like spaceship in splash scene
+var characterY = 556; //Y value for TIE fighter like spaceship in splash scene
+var shipX = 300; //X value for x-wing in splash scene
+var shipY = 165; //Y value for x-wing in splash scene
+var shipSpeed=random(1,2); //Ship speed on start scene
+var f = createFont("monospace"); //Font for title of game
+var shipCounter = 0; //value for ship chooser
+var moveX1 = 0; //Makes bitmoji appear
+var moveX2 = 0; //Makes bitmoji appear
+var lengthTime = 1; //Time timer is run for
+var last = 0; //Part of timer
+
+var drawTIE = function(characterX,characterY){
+    //left wing
+    strokeWeight(2.5);
+    stroke(0, 0, 0);
+    fill(77, 77, 77);
+    rect(characterX-40,characterY-20,22,20);
+    fill(77, 77, 77);
+    triangle(characterX+-29,characterY+-107, characterX+-63, characterY+-41,characterX+-42, characterY+-36);
+    fill(77, 77, 77);
+    rect(characterX-50,characterY-30,22,20);
+    rect(characterX-61,characterY-42,22,20);
+    //right wing
+    rect(characterX+20,characterY-21,22,20);
+    fill(77, 77, 77);
+    triangle(characterX+33,characterY+-107, characterX+40, characterY+-41,characterX+65, characterY+-34);
+    fill(77, 77, 77);
+    rect(characterX+32,characterY-30,22,20);
+    rect(characterX+40,characterY-42,22,20);
+    fill(18, 17, 1);
+    noStroke();
+    triangle(characterX+-58,characterY+-24,characterX+-49,characterY+-42,characterX+-39,characterY+-24);
+    triangle(characterX+61,characterY+-24,characterX+51,characterY+-42,characterX+42,characterY+-24);
+    //pilot seat
+    fill(38, 38, 38);
+    ellipse(characterX,characterY,40,44);
+    fill(156, 0, 0);
+    ellipse(characterX,characterY+-16,23,11);
+    strokeWeight(4);
+    stroke(173, 173, 173);
+    line(characterX+-9,characterY+-11, characterX+-9, characterY+16);
+    line(characterX+9,characterY+-10, characterX+9, characterY+16);
+    };
+    
+//Draws TIE fighter on start screen
+    
+var xWing=function(shipX,shipY,shipH){
+    //Body
+    noStroke();
+    fill(230, 230, 230);
+    rect (shipX*shipH/100,shipY,16,86);
+   rect(shipX+1,shipY,15,47);
+    rect(shipX+-5,shipY+44,12,39);
+    rect(shipX+13,shipY+44,12,38);
+    stroke(232, 32, 18);
+    line(shipX+14,shipY+2,shipX+15,shipY+34);
+    line(shipX+2,shipY+2,shipX+1,shipY+34);
+    //Nose
+    fill(204, 198, 198);
+    noStroke();
+    rect (shipX+6,shipY-10,6,10);
+    triangle(shipX, shipY, shipX+7, shipY-11, shipX+6, shipY);
+    triangle(shipX+16, shipY, shipX+11, shipY-11, shipX+11, shipY);
+    //Right Wing
+    fill(230, 230, 230);
+    rect(shipX+16,shipY+50,45,21);
+    triangle (shipX+16,shipY+71,shipX+16,shipY+86,shipX+61,shipY+71);
+    //Left Wing
+    rect(shipX-45,shipY+50,45,21);
+    triangle (shipX-45,shipY+71,shipX,shipY+86,shipX,shipY+71);
+    //Engine
+    fill(128, 124, 124);
+    rect(shipX-12,shipY+44,12,38);
+    rect(shipX+16,shipY+44,12,38);
+    fill(219, 215, 219);
+    rect(shipX-12,shipY+55,12,16);
+    rect(shipX+16,shipY+55,12,16);
+    //Back Middle
+    fill(112, 103, 103);
+    rect(shipX+3,shipY+44,10,38);
+    fill(77, 64, 67);
+    ellipse(shipX+8,shipY+63,10,10);
+    //Wing Details
+    fill(232, 32, 18);
+    rect(shipX-36,shipY+62,4,12);
+    rect(shipX-28,shipY+62,4,12);
+    rect(shipX-20,shipY+62,4,12);
+    rect(shipX+46,shipY+62,4,12);
+    rect(shipX+38,shipY+62,4,12);
+    rect(shipX+30,shipY+62,4,12);
+    rect(shipX-42,shipY+50,7,10);
+    rect(shipX-36,shipY+56,6,4);
+    rect(shipX+50,shipY+50,7,10);
+    rect(shipX+44,shipY+56,6,4);
+    //Back of Engines
+    fill(92, 78, 78);
+    rect(shipX-9,shipY+82,5,17);
+    rect(shipX+19,shipY+82,5,17);
+    //Cockpit
+    rect(shipX+5,shipY+25,6,16);
+    arc(shipX+8,shipY+32,6,33,180,360);
+    //Guns
+    fill(173, 173, 173);
+    rect(shipX-47,shipY+45,5,26);
+    rect(shipX+57,shipY+45,5,26);
+    rect(shipX-46,shipY+22,3,23);
+    rect(shipX+58,shipY+22,3,23);
+    fill(153, 153, 153);
+    rect(shipX-47,shipY+26,5,6);
+    rect(shipX+57,shipY+26,5,6);
+    //Body Details
+    fill(219, 213, 199);
+    rect(shipX+6,shipY,4,12);
+};
+
+//Draws x-wing in start screen
+
+var star = function(x,y,sp,sz) {
+    this.x = random(0,600);
+    this.y = random(0,600);
+    this.speed = random(2,16);
+    this.size = random(1,4);
+};
+
+//Constructor for stars, all values are random to create a unique background each time the game is restarted
+
+star.prototype.draw = function() {
+    fill(255, 255, 255);
+    noStroke();
+    ellipse(this.x,this.y,this.size,this.size);
+    this.y+=this.speed;
+    if(this.y > 600) {
+        this.y = 0;
+        this.x = random(0,600);
+        this.speed = random(2,16);
+        this.size = random(1,4);
+    }
+};
+
+//Creates the prototype for each star, the width and height of each star is random giving the appearence of distance between the stars
+
+//The speed is random also which makes the background more unique the Khan raindrop which is what this is based on
+
+//If the y value of a star is greater than 600, meaning it moves off screen, then it is reset to y=0, a random x value, a random speed, and a random size
+
+var stars = [];
+for (var i = 0; i <= numStars; i++) {  
+    stars.push(new star());
+}
+
+//This uses the global variable for number of stars to run a for loop creating a new star and not having more than 150 on the screen at any given time
+
+//It pushes the new stars into an array to draw the stars which is used later on in each scene it is called in
+
+var Button = function(config) {
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 60;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+};
+
+//This is the constructor for the Khan button
+
+Button.prototype.draw = function() {
+    fill(0, 0, 0);
+    rect(this.x, this.y, this.width, this.height, 0);
+    fill(0, 0, 0);
+    textSize(18);
+    fill(159, 255, 150);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+
+//This is the prototype for the Khan button which all following new buttons are built using
+
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+//This determines if mouseX and mouseY are inside the size of the button
+
+Button.prototype.handleMouseClick = function() {
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+
+var btn1 = new Button({
+    x: 104,
+    y: 453,
+    width:168,
+    label: "Start Press □",
+    onClick: function() {
+        currentScene = 1;
+    }
+});
+
+//Button 1 starts the game by sending the player to the choice scene
+
+var btn2 = new Button({
+    x: 304,
+    y: 453,
+    width:237,
+    label: "How To Play Press ◯",
+    onClick: function() {
+        currentScene = 3;
+    }
+});
+
+//Button 2 sends the user to a basic tutorial on how the game is played
+
+var btn3 = new Button({
+   x: 230,
+    y: 453,
+    width:168,
+    label: "Play Press □",
+    onClick: function() {
+        currentScene = 1;
+    }
+});
+
+//Button 3 is the same as button 1 but a different x and y value and that it is in the tutorial scene. This allows for it to be moved around as it is on a different part of the screen.
+
+var btn4 = new Button({
+   x: 103,
+    y: 359,
+    width:145,
+    height:60,
+    label: "Chose Ship Press L1",
+    onClick: function() {
+        shipCounter = 2;
+    }
+});
+
+//Button 4 chooses the ship when clicked. this one chooses the x-wing. It does this by setting a global variable equal to 1 and then using an if statement chnages the ship which is used in the player function.
+
+var btn5 = new Button({
+   x: 398,
+    y: 359,
+    width:168,
+    height:60,
+    label: "Chose Ship Press R1",
+    onClick: function() {
+        shipCounter = 1;
+    }
+});
+
+//Button 5 does the same thing as button 4 but picks the TIE fighter
+
+var btn6 = new Button({
+    x: 260,
+    y: 453,
+    width:168,
+    label: "Start Press △",
+    onClick: function() {
+        currentScene = 2;
+    }
+});
+
+//Button 6 starts the game after the ship has been picked
+
+mouseClicked = function() {
+    if (currentScene === 0){
+        btn1.handleMouseClick();
+        btn2.handleMouseClick();
+    }
+    if (currentScene === 1){   
+        btn4.handleMouseClick();
+        btn5.handleMouseClick();
+        btn6.handleMouseClick();
+    }
+    if (currentScene === 3){
+        btn3.handleMouseClick();
+    }
+};
+
+//This makes it so a button is only clickable if it is on the correct scene. For example, if I am on the start scene, I cannot accidentally click the buttons to select my ship.
+
+var timer = function(){
+  if(millis() > last+1000 && hit === true){
+    last = millis();
+    hit = false;
+    }
+    
+    if (shoot === true) {
+        shoot = false;
+    }
+};
+
+//This timer delays the ship following being hit. The space is not significant but it is enough for the player to know they have been hit. It also allows for the player to shoot quickly
+
+var gameStats = function() {
+    fill(255, 255, 255);
+    rect(1, 1, 225, 32);
+    fill(0, 0, 0);
+    textSize(18);
+    text("Score: " + score, 2, 6);
+    text("Lives: " + lives, 130, 6);
+};
+
+//This function creates a rectangle inside the game which allows the user to see their score and number of lives
+
+var player = function() {
+    
+    x += xSpeed;
+    x= constrain(x,70,530);
+
+    if (hit === false && lives > 0) {
+
+    if (shipCounter === 1 || shipCounter === 0){
+        //left wing
+        strokeWeight(2.5);
+        stroke(0, 0, 0);
+        fill(77, 77, 77);
+        rect(x-40,y-20,22,20);
+        fill(77, 77, 77);
+        triangle(x+-29,y+-107, x+-63, y+-41,x+-42, y+-36);
+        fill(77, 77, 77);
+        rect(x-50,y-30,22,20);
+        rect(x-61,y-42,22,20);
+        //right wing
+        rect(x+20,y-21,22,20);
+        fill(77, 77, 77);
+        triangle(x+33,y+-107, x+40, y+-41,x+65, y+-34);
+        fill(77, 77, 77);
+        rect(x+32,y-30,22,20);
+        rect(x+40,y-42,22,20);
+        fill(18, 17, 1);
+        noStroke();
+        triangle(x+-58,y+-24,x+-49,y+-42,x+-39,y+-24);
+        triangle(x+61,y+-24,x+51,y+-42,x+42,y+-24);
+        //pilot seat
+        fill(0, 0, 0);
+        ellipse(x,y,40,44);
+        fill(156, 0, 0);
+        ellipse(x,y+-16,23,11);
+        strokeWeight(4);
+        stroke(173, 173, 173);
+        line(x+-9,y+-11, x+-9, y+16);
+        line(x+9,y+-10, x+9, y+16);
+        }
+    else if (shipCounter === 2){
+        //Body
+        noStroke();
+        fill(230, 230, 230);
+        rect (x,y-50,16,86);
+       rect(x+1,y-50,15,47);
+        rect(x+-5,y+44-50,12,39);
+        rect(x+13,y+44-50,12,38);
+        stroke(232, 32, 18);
+        line(x+14,y+2-50,x+15,y+34-50);
+        line(x+2,y+2-50,x+1,y+34-50);
+        //Nose
+        fill(204, 198, 198);
+        noStroke();
+        rect (x+6,y-10-50,6,10);
+        triangle(x, y-50, x+7, y-11-50, x+6, y-50);
+        triangle(x+16, y-50, x+11, y-11-50, x+11, y-50);
+        //Right Wing
+        fill(230, 230, 230);
+        rect(x+16,y+50-50,45,21);
+        triangle (x+16,y+71-50,x+16,y+86-50,x+61,y+71-50);
+        //Left Wing
+        rect(x-45,y+50-50,45,21);
+        triangle (x-45,y+71-50,x,y+86-50,x,y+71-50);
+        //Engine
+        fill(128, 124, 124);
+        rect(x-12,y+44-50,12,38);
+        rect(x+16,y+44-50,12,38);
+        fill(219, 215, 219);
+        rect(x-12,y+55-50,12,16);
+        rect(x+16,y+55-50,12,16);
+        //Back Middle
+        fill(112, 103, 103);
+        rect(x+3,y+44-50,10,38);
+        fill(77, 64, 67);
+        ellipse(x+8,y+63-50,10,10);
+        //Wing Details
+        fill(232, 32, 18);
+        rect(x-36,y+62-50,4,12);
+        rect(x-28,y+62-50,4,12);
+        rect(x-20,y+62-50,4,12);
+        rect(x+46,y+62-50,4,12);
+        rect(x+38,y+62-50,4,12);
+        rect(x+30,y+62-50,4,12);
+        rect(x-42,y+50-50,7,10);
+        rect(x-36,y+56-50,6,4);
+        rect(x+50,y+50-50,7,10);
+        rect(x+44,y+56-50,6,4);
+        //Back of Engines
+        fill(92, 78, 78);
+        rect(x-9,y+82-50,5,17);
+        rect(x+19,y+82-50,5,17);
+        //Cockpit
+        rect(x+5,y+25-50,6,16);
+        arc(x+8,y+32-50,6,33,180,360);
+        //Guns
+        fill(173, 173, 173);
+        rect(x-47,y+45-50,5,26);
+        rect(x+57,y+45-50,5,26);
+        rect(x-46,y+22-50,3,23);
+        rect(x+58,y+22-50,3,23);
+        fill(153, 153, 153);
+        rect(x-47,y+26-50,5,6);
+        rect(x+57,y+26-50,5,6);
+        //Body Details
+        fill(219, 213, 199);
+        rect(x+6,y-50,4,12);
+        }
+    }
+
+  if (hit === true) {
+        timer();
+  }
+};
+
+//player function which moves the ship right and left with the x speed variable (the actual changing of this occurs later on), draws the ship chosen by the user on the choice screen, and turns on the timer if the ship is hit. 
+
+//The ship is only drawn if the lives are greater than 0, so when the ship is hit twice, it is no longer drawn
+
+var enemy_draw = function(imageX, imageY) {
+    fill(0, 255, 0);
+    stroke(0, 0, 0);
+    fill(139, 190, 214);
+    arc(imageX,imageY,50,50,-180,0);
+    fill(105, 105, 105);
+    rect(imageX-8,imageY,15,20);
+    rect(imageX-5,imageY+20,8,15);
+    rect(imageX-5,imageY-32,8,7);
+    fill(6, 6, 184);
+    ellipse(imageX+20,imageY+3,10,10);
+    ellipse(imageX-20,imageY+3,10,10);
+    fill(0, 0, 0);
+    rect(imageX+17,imageY+7,5,10);
+    rect(imageX-23,imageY+7,5,10);
+    line(imageX+16,imageY,imageX-16,imageY);
+};
+
+//Draws enemy ship design with the parameters imageX and imageY
+
+var bullet_draw = function(imageX, imageY) {
+    fill(112, 110, 112);
+    stroke(230, 23, 185);
+    strokeWeight(2);
+    ellipse(imageX, imageY, 9, 9);
+};
+
+//Draws the bullets design using the same parameters as the enemy ship. The design of the bullet is made using an increased stroke weight and an ellipse
+
+
+var enemyControl = function() {
+
+    for (var i = 0; i < enemies.length; i++) {
+        enemies[i].x += enemies[i].xSpeed;
+        enemies[i].y += enemySpeed;
+        enemy_draw(enemies[i].x, enemies[i].y);
+        
+        for (var e = 0; e < bullets.length; e++) {
+            var distance = dist(bullets[e].x, bullets[e].y, enemies[i].x, enemies[i].y);
+
+            if (distance < enemySize) {
+                enemies[i].y = random(1, -20);
+                enemies[i].x = random(30, 570);
+                bullets.splice(e, 1);
+                score= score + 10;
+                e--;
+            }
+
+            else if (bullets[e].y < 0) {
+                bullets.splice(e, 1);
+                e--;
+            }
+        }
+        
+        if (dist(x, y, enemies[i].x, enemies[i].y) < enemySize && hit === false) {
+            enemies[i].y = random(1, -20);
+            enemies[i].x = random(10, 570);
+            xSpeed = 0;
+            lives --;
+            hit = true;
+        }
+
+        if (enemies[i].y > 620) {
+            enemies[i].y = random(1, -20);
+            enemies[i].x = random(30, 570);
+        }
+        if (score % 300 === 0 && score > 0 && enemySpeed < 6) {
+        enemySpeed += 3;
+        }
+        else if (score % 600 === 0 && score > 0 && enemySpeed === 6) {
+        enemySpeed += 3;
+        }
+    }
+};
+
+//Controls the enemy and contains all the parts of enemy movement.
+
+//First, the enemies x value is randomized and the y value is increased so it moves down screen. This is intially a value of 3 but increases later on in the function.
+
+//Secondly, it is determined if the enemy is hit using the distance in the Khan documentation. This is a new piece of the khan librayry to us but it determines the distance between the bullet and an enemy ship. This worked better than doing it a way similar to the way we determined contact in previous assignments
+
+//Then a similar piece of code determines if the player is hit by an enemy. it checks to see if x and y are on the enemy ship. If so, then a life is lost and the enemy ship is sent back to the top of the screen. In this piece of code, the x speed is stopped to stop player movement momentarily.
+
+//Then, if an enemy moves off screen, it is put back at the top of the screen with a random x value and a y value between -20 and 1. Earlier in this function, the bullet is also moved off screen using a splice
+
+//Finally, if user score reaches 300, the game speed up the enemies, changing the speed from 3 to 6. Then, if the user reaches a score of 600, the speed variable is changed to 9 which is the fastest this game gets.
+
+var bulletControl = function() {
+    for (var i = 0; i < bullets.length; i += 1) {
+        bullets[i].y += bullets[i].ySpeed;
+        bullet_draw(bullets[i].x, bullets[i].y);
+    }
+
+    if (shoot === true) {
+        timer();
+    }
+};
+
+//This function controls bullet movement. It moves the bullet across the screen independently from the location in which it was shoot. It also draws the bullets and activates the timer if a bullet is shoot.
+
+var new_enemy = function() {
+    enemyControl();
+    enemyRandom = round(random(1, 20));
+    var newEnemy = {
+        x: random(30, 570),
+        y: random(1, -20),
+        xSpeed: 0,
+        ySpeed: 0
+    };
+    
+    if (enemyRandom === 20 && enemies.length < 20) {
+        enemies.push(newEnemy);
+    }
+};
+
+//The variable new_enemy draws the enemies randomly between x values of 30 and 570 and y values of 1 and -20. It serves as the constructor for the enemies and pushes in the new enemies created into the array.
+
+var keyPressed = function() {
+    
+    if (keyCode === 37 && xSpeed > -11 && hit === false) {
+        xSpeed -= 11;
+    }
+
+    if (keyCode === 39 && xSpeed < 11 && hit === false) {
+        xSpeed += 11;
+    }
+    
+if (currentScene === 0){
+        if (keyCode === 32) {
+           currentScene = 1;
+        }
+        if (keyCode === 40) {
+           currentScene = 3;
+        }
+}
+if (currentScene === 3){
+          if (keyCode === 65) {
+           currentScene = 2;
+        }
+}
+
+if (currentScene === 1){
+        if(keyCode === 84){
+            shipCounter = 2;
+        }
+         if(keyCode === 89){
+            shipCounter = 1;
+        }
+          if (keyCode === 65) {
+           currentScene = 2;
+        }
+}
+};
+
+//This controls the movement across a sceen using left and right. It also allows for the game to played with a controller by changing scenes using a key. This works using a keyboard as well but is meant for controller use.
+
+var keyReleased = function() {
+
+    if (keyCode === 39 || keyCode === 37) {
+        xSpeed = 0;
+    }
+
+    if ((keyCode === 38 ) && bullets.length < 1000 && shoot === false && hit === false) {
+
+        shoot = true;
+
+        var newBullet = {
+            x: x,
+            y: y,
+            xSpeed: 0,
+            ySpeed: -6,
+            destroyed: false
+        };
+        bullets.push(newBullet);
+    }
+};
+
+//this keyReleased function stops movement once the left and right arrow keys are released. Hitting the up arrow makes shoot = true which activates the timer. It also creates a new bullet to push into the bullets array which is already controlled above
+
+var drawHead=function(bitmojiX,bitmojiY,bitmojiH)
+{
+    //Neck
+    fill(255, 200, 145);
+    rect(bitmojiX-15*bitmojiH/100,bitmojiY+36*bitmojiH/100,29*bitmojiH/100,18*bitmojiH/100);
+
+    //Head
+    fill(255, 200, 145);
+    ellipse(bitmojiX+0*bitmojiH/100,bitmojiY-10*bitmojiH/100,87*bitmojiH/100,99*bitmojiH/100);
+    
+    //chin
+    fill(186, 122, 26);
+    line (bitmojiX-7*bitmojiH/100,bitmojiY+24*bitmojiH/100,bitmojiX+7*bitmojiH/100,bitmojiY+24*bitmojiH/100);
+};
+
+var drawEyes=function(bitmojiX,bitmojiY,bitmojiH)
+{ 
+    //Right Eye
+    fill(255, 255, 255);
+    ellipse (bitmojiX+20*bitmojiH/100,bitmojiY-18*bitmojiH/100,18*bitmojiH/100,15*bitmojiH/100);
+    fill(117, 82, 82);
+    ellipse (bitmojiX+20*bitmojiH/100,bitmojiY-18*bitmojiH/100,7*bitmojiH/100,7*bitmojiH/100);
+    
+    //Left Eye
+    fill(255, 255, 255);
+    ellipse (bitmojiX-20*bitmojiH/100,bitmojiY-18*bitmojiH/100,18*bitmojiH/100,15*bitmojiH/100);
+    fill(117, 82, 82);
+    ellipse (bitmojiX-20*bitmojiH/100,bitmojiY-18*bitmojiH/100,7*bitmojiH/100,7*bitmojiH/100);
+};
+
+var drawEyeBrows=function(bitmojiX,bitmojiY,bitmojiH)
+{
+    //Left Eyebrow
+    line(bitmojiX-29*bitmojiH/100,bitmojiY-35*bitmojiH/100,bitmojiX-9*bitmojiH/100,bitmojiY-33*bitmojiH/100);
+    line(bitmojiX-5*bitmojiH/100,bitmojiY-35*bitmojiH/100, bitmojiX-9*bitmojiH/100,bitmojiY-33*bitmojiH/100);
+    
+    //Rigth Eyebrow
+    line(bitmojiX+15*bitmojiH/100,bitmojiY-35*bitmojiH/100,bitmojiX+5*bitmojiH/100,bitmojiY-36*bitmojiH/100);
+    line(bitmojiX+28*bitmojiH/100,bitmojiY-38*bitmojiH/100,bitmojiX+15*bitmojiH/100,bitmojiY-35*bitmojiH/100);
+};
+
+var drawGlasses=function(bitmojiX,bitmojiY,bitmojiH)
+{
+//Glasses
+    fill(255, 200, 145);
+    ellipse (bitmojiX+20*bitmojiH/100,bitmojiY-18*bitmojiH/100,31*bitmojiH/100,24*bitmojiH/100);
+    ellipse (bitmojiX-20*bitmojiH/100,bitmojiY-18*bitmojiH/100,31*bitmojiH/100,24*bitmojiH/100);
+    line(bitmojiX+5*bitmojiH/100,bitmojiY-19*bitmojiH/100,bitmojiX-6*bitmojiH/100,bitmojiY-20*bitmojiH/100);
+    line(bitmojiX+42*bitmojiH/100,bitmojiY-25*bitmojiH/100,bitmojiX+34*bitmojiH/100,bitmojiY-15*bitmojiH/100);
+    line(bitmojiX-43*bitmojiH/100,bitmojiY-26*bitmojiH/100,bitmojiX-35*bitmojiH/100,bitmojiY-21*bitmojiH/100);
+};
+
+var drawEars=function(bitmojiX,bitmojiY,bitmojiH)
+{
+      //Left Ear
+    fill(255, 200, 145);
+    arc(bitmojiX-44*bitmojiH/100,bitmojiY-7*bitmojiH/100,13*bitmojiH/100,29*bitmojiH/100,80,277);
+    
+    //Right Ear
+    fill(255, 200, 145);
+    arc(bitmojiX+45*bitmojiH/100,bitmojiY-7*bitmojiH/100,13*bitmojiH/100,29*bitmojiH/100,-124,120);
+};
+
+var drawHair=function(bitmojiX,bitmojiY,bitmojiH)
+{
+     //Hair
+    fill(87, 38, 38);
+    arc(bitmojiX-39*bitmojiH/100,bitmojiY-33*bitmojiH/100,11*bitmojiH/100,28*bitmojiH/100,100,334);
+    arc(bitmojiX+39*bitmojiH/100,bitmojiY-33*bitmojiH/100,11*bitmojiH/100,28*bitmojiH/100,-147,113);
+};
+
+var drawNose=function(bitmojiX,bitmojiY,bitmojiH)
+{
+ //Nose
+    stroke(0, 0, 0);
+    fill(255, 200, 145);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY+0*bitmojiH/100+1,6*bitmojiH/100,9*bitmojiH/100,19,150);
+    arc(bitmojiX+5*bitmojiH/100,bitmojiY+5*bitmojiH/100,6*bitmojiH/100,-12*bitmojiH/100,14,150);
+    arc(bitmojiX-5*bitmojiH/100,bitmojiY+5*bitmojiH/100,6*bitmojiH/100,-12*bitmojiH/100,14,150);
+    line(bitmojiX+9*bitmojiH/100,bitmojiY+3*bitmojiH/100,bitmojiX+6*bitmojiH/100,bitmojiY-4*bitmojiH/100);
+    line(bitmojiX-9*bitmojiH/100,bitmojiY+3*bitmojiH/100,bitmojiX-5*bitmojiH/100,bitmojiY-4*bitmojiH/100);
+    arc(bitmojiX+4*bitmojiH/100,bitmojiY-17*bitmojiH/100,3*bitmojiH/100,17*bitmojiH/100,89,259);
+};
+
+var drawMouth=function(bitmojiX,bitmojiY,bitmojiH)
+{
+    //Mouth
+    fill(255, 255, 255);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY+12*bitmojiH/100,31*bitmojiH/100,10*bitmojiH/100, -16, 186);
+    line(bitmojiX-18*bitmojiH/100,bitmojiY+11*bitmojiH/100,bitmojiX+16*bitmojiH/100,bitmojiY+12*bitmojiH/100);
+};
+
+var drawShirt=function(bitmojiX,bitmojiY,bitmojiH)
+{
+    
+//Shirt
+    noStroke();
+    fill(83, 99, 219);
+    ellipse(bitmojiX+3*bitmojiH/100,bitmojiY+77*bitmojiH/100,84*bitmojiH/100,51*bitmojiH/100);
+    rect(bitmojiX-39*bitmojiH/100,bitmojiY+75*bitmojiH/100,84*bitmojiH/100,28*bitmojiH/100);
+    stroke(0, 0, 0);
+};
+
+var drawIntials=function(bitmojiX,bitmojiY,bitmojiH)
+{
+    //Intials on Shirt
+    //M
+    line(bitmojiX-24*bitmojiH/100,bitmojiY+67*bitmojiH/100,bitmojiX-26*bitmojiH/100,bitmojiY+85*bitmojiH/100);
+    line(bitmojiX-24*bitmojiH/100,bitmojiY+66*bitmojiH/100,bitmojiX-12*bitmojiH/100,bitmojiY+85*bitmojiH/100);
+    line(bitmojiX-6*bitmojiH/100,bitmojiY+66*bitmojiH/100,bitmojiX-12*bitmojiH/100,bitmojiY+85*bitmojiH/100);
+    line(bitmojiX-6*bitmojiH/100,bitmojiY+66*bitmojiH/100,bitmojiX+3*bitmojiH/100,bitmojiY+85*bitmojiH/100);
+    //B
+    fill(83, 99, 219);
+    line(bitmojiX+14*bitmojiH/100,bitmojiY+66*bitmojiH/100,bitmojiX+14*bitmojiH/100,bitmojiY+86*bitmojiH/100);
+    arc(bitmojiX+16*bitmojiH/100,bitmojiY+81*bitmojiH/100,21*bitmojiH/100,11*bitmojiH/100,-89,90);
+    arc(bitmojiX+16*bitmojiH/100,bitmojiY+70*bitmojiH/100,21*bitmojiH/100,11*bitmojiH/100,-89,90);
+};
+
+var drawHat=function(bitmojiX,bitmojiY,bitmojiH)
+{
+    //Hat
+    fill(73, 100, 235);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY-52*bitmojiH/100,80*bitmojiH/100,60*bitmojiH/100,174,366);
+    fill(102, 100, 100);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY-43*bitmojiH/100,84*bitmojiH/100,31*bitmojiH/100,178,361);
+    fill(255, 200, 145);
+    arc(bitmojiX+0*bitmojiH/100,bitmojiY-41*bitmojiH/100,68*bitmojiH/100,16*bitmojiH/100,169,361);
+    line(bitmojiX-42*bitmojiH/100,bitmojiY-43*bitmojiH/100,bitmojiX-33*bitmojiH/100,bitmojiY-43*bitmojiH/100);
+    line(bitmojiX+40*bitmojiH/100,bitmojiY-43*bitmojiH/100,bitmojiX+31*bitmojiH/100,bitmojiY-44*bitmojiH/100);
+};
+
+var drawBitmoji=function(bitmojiX,bitmojiY,bitmojiH)
+{
+    drawHead(bitmojiX,bitmojiY,bitmojiH);
+    drawGlasses(bitmojiX,bitmojiY,bitmojiH);
+    drawEyes(bitmojiX,bitmojiY,bitmojiH);
+    drawEyeBrows(bitmojiX,bitmojiY,bitmojiH);
+    drawEars(bitmojiX,bitmojiY,bitmojiH);
+    drawHair(bitmojiX,bitmojiY,bitmojiH);
+    drawNose(bitmojiX,bitmojiY,bitmojiH);
+    drawMouth(bitmojiX,bitmojiY,bitmojiH);
+    drawShirt(bitmojiX,bitmojiY,bitmojiH);
+    drawIntials(bitmojiX,bitmojiY,bitmojiH);
+    drawHat(bitmojiX,bitmojiY,bitmojiH);
+};
+
+var drawME=function(mattx,matty,h){
+    stroke(0);
+    fill(255, 243, 209);
+    quad(mattx+-34*h/224,matty+89*h/203,mattx+46*h/204,matty+76*h/200,mattx+51*h/219,matty+149*h/219,mattx+-30*h/219,matty+150*h/219);
+    fill(255, 255, 255);
+    quad(mattx+137*h/219,matty+130*h/207,mattx+148*h/219,matty+364*h/219,mattx+28*h/219,matty+368*h/219,mattx+-10*h/219,matty+124*h/204);
+    quad(mattx+-124*h/200,matty+133*h/212,mattx+-137*h/219,matty+364*h/219,mattx+-56*h/219,matty+363*h/219,mattx+50*h/219,matty+120*h/196);
+    rect(mattx+-97*h/201, matty+118*h/199, 200*h/195, 300*h/219, 200*h/219);//body
+    //head
+    noStroke();
+    fill(255, 243, 209);
+    ellipse(mattx+5, matty+-4, 200*h/219, 224*h/219);//head
+    stroke(0, 0, 0);
+    ellipse(mattx-34*h/219, matty-20*h/219, 35*h/219, 25*h/219);//left eye
+    ellipse(mattx+34*h/219, matty-20*h/219, 17*h/219, 25*h/219);//left eye
+    fill(255,255,255);
+    ellipse(mattx-34*h/219, matty-20*h/219, 35*h/219, 14*h/219);//left
+    fill(255,243,209);
+    ellipse(mattx+34*h/219, matty-20*h/219, 35*h/219, 25*h/219);//right
+    fill(255,255,255);
+    ellipse(mattx+34*h/219, matty-20*h/219, 35*h/219, 14*h/219);//left
+    fill(0, 160, 200);
+    ellipse(mattx-34*h/219, matty-20*h/219, 14*h/219, 14*h/219);//left eye
+    ellipse(mattx-34*h/219, matty-20*h/219, 2*h/219, 5*h/219);//left
+    fill(0, 160, 200);
+    ellipse(mattx+34*h/219, matty-20*h/219, 15*h/219, 13*h/219);//left
+    ellipse(mattx+34*h/219, matty-20*h/219, 2*h/219, 5*h/219);//left
+    line(mattx+19*h/219,matty+-44*h/219,mattx+55*h/219, matty+-39*h/219);
+    line(mattx+-51*h/219,matty+-37*h/219,mattx+-17*h/219, matty+-42*h/219);
+    noStroke();
+    fill(196, 165, 104);
+    quad(mattx+-84*h/219,matty+-56*h/219,mattx+-44*h/219,matty-100*h/196,mattx+45*h/219,matty+-103*h/192,mattx+-6*h/219,matty+-73*h/219);
+    quad(mattx+-46*h/219,matty+-101*h/219,mattx+-44*h/219,matty-100*h/219,mattx+45*h/219,matty+-103*h/219,mattx+-6*h/219,matty+-111*h/191);
+    quad(mattx+-84*h/150,matty+-56*h/234,mattx+-73*h/210,matty-76*h/173,mattx+-45*h/219,matty+-97*h/219,mattx+-6*h/219,matty+-73*h/200);
+    quad(mattx+-100*h/219,matty+-56*h/219,mattx+-100*h/219,matty-76*h/219,mattx+12*h/219,matty+-97*h/219,mattx+-16*h/219,matty+-73*h/219);
+    quad(mattx+-123*h/219,matty+-56*h/219,mattx+-31*h/219,matty-113*h/197,mattx+66*h/219,matty+-102*h/219,mattx+2*h/219,matty+-113*h/219);
+    quad(mattx+98*h/200,matty+-33*h/184,mattx+59*h/219,matty-91*h/219,mattx+29*h/196,matty+-103*h/187,mattx+60*h/194,matty+-60*h/194);
+    quad(mattx+98*h/196,matty+-35*h/219,mattx+68*h/191,matty-91*h/193,mattx+36*h/219,matty+-103*h/194,mattx+60*h/187,matty+-60*h/219);
+    stroke(0, 0, 0);
+    strokeWeight(1);
+    fill(255,243,209);
+    bezier(mattx+2*h/220, matty+38*h/216, mattx+49*h/227, matty+49*h/225, mattx+11*h/210, matty+15*h/220, mattx, matty-1*h/219);
+    fill(255, 255, 255);
+    arc(mattx+2*h/220, matty+51*h/200, 74*h/200, 34*h/204, 0, 180);
+    line(mattx-38*h/220,matty+56*h/219,mattx+40*h/217, matty+56*h/220);
+};
+
+//This code draws both bitmojis. The bitmojis only appear on the tutorial scene because the game hardly ran if they were placed on the start scene.
+
+var startScreen= function(){
+    //start screen and buttons
+        background(0, 0, 0);
+        textFont(f);
+        fill(159, 255, 150);
+        textSize(40);
+        text("Galaga", 230, 95);
+        textSize(20);
+        text("By Matt Barbrack and Matt Boekamp", 95, 158);
+    for(var i = 0; i < numStars; i++) {
+        stars[i].draw();
+        btn1.draw();
+        btn2.draw();
+        
+        drawTIE(characterX,characterY-229);
+        strokeWeight(1);
+        xWing(shipX+100,shipY+100);
+
+       characterX=characterX+shipSpeed;
+       if (characterX >= 550){
+           shipSpeed=random(-0.001,-0.02);
+       }
+       else if (characterX<=50){
+           shipSpeed=random(0.001,0.02);
+       }
+       
+       shipX=shipX+shipSpeed;
+       if (shipX >= 430){
+           shipSpeed=random(-0.001,-0.02);
+       }
+       else if (shipX<=50){
+           shipSpeed=random(0.001,0.02);
+       }
+    }
+};
+
+//The start scene contains the title which is written in a font which we found on Khan. It also, like all the other scenes, contains the moving star background. Then, it has the two ships of the game moving back and forth as well as buttons to get to other scenes.
+
+var bitmojiAppear = function(){
+    if (score > 400){
+        strokeWeight(1);
+        stroke(0, 0, 0);
+        drawBitmoji(550+moveX1, 50, 30);
+        fill(255, 255, 255);
+        ellipse(500+moveX1,50,65,40);
+        fill(0, 0, 0);
+        textSize(11);
+        text("Nice Job!",471+moveX1,42);
+    }
+    if (score >= 500){
+        moveX1=500;
+    }
+
+    if (score > 600){
+        strokeWeight(1);
+        stroke(0, 0, 0);
+        drawME(550+moveX2, 50, 30); 
+        fill(255, 255, 255);
+        ellipse(500+moveX2,50,70,40);
+        fill(0, 0, 0);
+        textSize(11);
+        text("Great Job!",467+moveX2,42);
+    }
+    if (score >= 700){
+        moveX2=500;
+    }
+};
+
+//This makes a bitmoji appear in the game when a certain score is reached and then disappear when the score is a 100 more than when it appears.
+
+var gameOver = function(){
+    // draw the game over scene and button
+   background(0, 0, 0);
+   fill(255, 0, 0);
+    textFont(f);
+   textSize(60);
+   text("GAME OVER", 122,242);
+   text("Score: "+score, 122,313);
+         for(var i = 0; i < numStars; i++) {
+        stars[i].draw();
+    }
+};
+
+//The game over screen appears if the player looses both lives. It has the moving star background as well as the font variable
+
+var HowToPlay = function(){
+    textSize(40);
+    text("How to play",171,50);
+    textSize(20);
+    text("Directions:",19,168);
+    text("Move the joystick to the right or left to move",19,204);
+    text("Press the X button in order to shoot",19,257);
+    text("You get two lives",19,311);
+    text("Goal:",19,365);
+    textSize(15);
+    text("Shoot the most enemies in order to get the high score",19,398);
+    
+    btn3.draw();
+    strokeWeight(1);
+    drawME(100,47,60);
+    drawBitmoji(500,69,60);
+};
+
+//The how to play scene contains directions on how to play, as well as a button and both bitmojis
+
+var gameScene = function() {
+    strokeWeight(2);
+    new_enemy(); 
+    bulletControl();
+    player(); 
+    bitmojiAppear(); 
+    timer();
+        if(i>lengthTime){
+            i=0;
+        }
+};
+
+//The main game scene  has the new enemy function to draw new enemies, the bullet control function allows for the bullets to move across the scene, and of course the player function is there to draw the player
+
+var spaceShipChoice = function(){
+         background(0, 0, 0);
+    for(var i = 0; i < numStars; i++) {
+        stars[i].draw();
+        
+        drawTIE(450,329);
+        xWing(150,250);
+        
+        btn4.draw();
+        btn5.draw();
+        btn6.draw();
+        
+        fill(159, 255, 150);
+        textSize(40);
+        text("Choose Your Ship", 150, 95);
+    
+    }
+};
+
+//The ship choice scene has the two options and buttons for each. The buttons under the ship change the ship counter variable which determine which ship is chosen. It also has a moving star background.
+
+var draw = function() {
+
+    background(0, 0, 0);
+    strokeWeight(2);
+    
+    for(var i = 0; i < numStars; i++) {
+        stars[i].draw();
+    }
+    
+    if (currentScene === 0){
+        startScreen();
+    }
+
+    else if (currentScene === 1){
+      spaceShipChoice();
+
+    }
+    else if (currentScene === 2){
+        strokeWeight(1);
+        gameScene();
+
+        gameStats();
+
+    }
+     else if (currentScene === 3){
+      HowToPlay();
+
+    }
+
+      if (lives <= 0) {
+        start = false;
+        gameOver();
+    }
+};
+
+//The draw fucntion contains each scene under an if statement which controls what scene the player sees. 
