@@ -904,7 +904,7 @@ var HowToPlay = function(){
 
 //The how to play scene contains directions on how to play, as well as a button and both bitmojis
 
-var game_main = function() {
+var gameScene = function() {
     strokeWeight(2);
     new_enemy(); 
     bulletControl();
@@ -954,7 +954,7 @@ var draw = function() {
     }
     else if (currentScene === 2){
         strokeWeight(1);
-        game_main();
+        gameScene();
 
         gameStats();
 
