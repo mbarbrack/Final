@@ -6,11 +6,11 @@ var enemyRandom = 0; //Creates enemies in x values
 var enemySize = 30; //Location of the center of each enemy
 var enemySpeed = 3; //Speed at which enemy moves down screen
 var bullets = []; //Array for bullets
-var t = 0; //Place holder in the timer
-var fired = false; //Controls rate at which player can shoot
+var t = 0; //Place holder in the clock
+var shoot = false; //Controls rate at which player can shoot
 var x = 200; //X value of spaceship
 var y = 550; //Y value of spaceship
-var x_speed = 0; //intial value of speed without key being pressed
+var xSpeed = 0; //intial value of speed without key being pressed
 var hit = false; //Determines if player has been hit by enemy
 var numStars = 150; //Number of background stars
 var currentScene = 0; //Sets intial scene to 0, changes after buttons are pressed
@@ -21,6 +21,8 @@ var shipY = 165; //Y value for x-wing in splash scene
 var shipSpeed=random(1,2); //Ship speed on start scene
 var f = createFont("monospace"); //Font for title of game
 var shipCounter = 0; //value for ship chooser
+var moveX1 = 0; //Makes bitmoji appear
+var moveX2 = 0; //Makes bitmoji appear
 
 var drawTIE = function(characterX,characterY){
     //left wing
@@ -294,11 +296,11 @@ mouseClicked = function() {
 
 //This makes it so a button is only clickable if it is on the correct scene. For example, if I am on the start scene, I cannot accidentally click the buttons to select my ship.
 
-var timer = function() {
+var clock = function() {
     t += 1;
 
-    if (t % 4 === 0 && fired === true) {
-        fired = false;
+    if (t % 4 === 0 && shoot === true) {
+        shoot = false;
         t = 0;
     }
 
@@ -308,7 +310,7 @@ var timer = function() {
     }
 };
 
-//This timer spaces out shots by the user as well as delays the ship following being hit. Following each of these situations, t returns to 0, allowing for the timer to be run again
+//This clock spaces out shots by the user as well as delays the ship following being hit. Following each of these situations, t returns to 0, allowing for the clock to be run again
 
 var gameStats = function() {
     fill(255, 255, 255);
@@ -324,7 +326,7 @@ var gameStats = function() {
 var player = function() {
 
     fill(24, 18, 224);
-    x += x_speed;
+    x += xSpeed;
     x= constrain(x,70,530);
 
     if (hit === false && lives > 0) {
@@ -432,11 +434,11 @@ var player = function() {
     }
 
   if (hit === true) {
-        timer();
+        clock();
   }
 };
 
-//player function which moves the ship right and left with the x speed variable (the actual changing of this occurs later on), draws the ship chosen by the user on the choice screen, and turns on the timer if the ship is hit. 
+//player function which moves the ship right and left with the x speed variable (the actual changing of this occurs later on), draws the ship chosen by the user on the choice screen, and turns on the clock if the ship is hit. 
 
 //The ship is only drawn if the lives are greater than 0, so when the ship is hit twice, it is no longer drawn
 
@@ -497,7 +499,7 @@ var enemyControl = function() {
         if (dist(x, y, enemies[i].x, enemies[i].y) < enemySize && hit === false) {
             enemies[i].y = random(1, -20);
             enemies[i].x = random(10, 570);
-            x_speed = 0;
+            xSpeed = 0;
             lives --;
             hit = true;
         }
@@ -535,12 +537,12 @@ var bulletControl = function() {
         bullet_draw(bullets[i].x, bullets[i].y);
     }
 
-    if (fired === true) {
-        timer();
+    if (shoot === true) {
+        clock();
     }
 };
 
-//This function controls bullet movement. It moves the bullet across the screen independently from the location in which it was fired. It also draws the bullets and activates the timer if a bullet is fired.
+//This function controls bullet movement. It moves the bullet across the screen independently from the location in which it was shoot. It also draws the bullets and activates the clock if a bullet is shoot.
 
 var new_enemy = function() {
     enemyControl();
@@ -560,24 +562,14 @@ var new_enemy = function() {
 
 //The variable new_enemy draws the enemies randomly between x values of 30 and 570 and y values of 1 and -20. It serves as the constructor for the enemies and pushes in the new enemies created into the array.
 
-
-var game_main = function() {
-    strokeWeight(2);
-    new_enemy(); // Draw enemies
-    bulletControl();
-    player(); // Update the player
-};
-
-//The main game scene  has the new enemy function to draw new enemies, the bullet control function allows for the bullets to move across the scene, and of course the player function is there to draw the player
-
 var keyPressed = function() {
     
-    if (keyCode === 37 && x_speed > -11 && hit === false) {
-        x_speed -= 11;
+    if (keyCode === 37 && xSpeed > -11 && hit === false) {
+        xSpeed -= 11;
     }
 
-    if (keyCode === 39 && x_speed < 11 && hit === false) {
-        x_speed += 11;
+    if (keyCode === 39 && xSpeed < 11 && hit === false) {
+        xSpeed += 11;
     }
     
     if (keyCode === 32) {
@@ -593,12 +585,12 @@ var keyPressed = function() {
 var keyReleased = function() {
 
     if (keyCode === 39 || keyCode === 37) {
-        x_speed = 0;
+        xSpeed = 0;
     }
 
-    if ((keyCode === 38 ) && bullets.length < 1000 && fired === false && hit === false) {
+    if ((keyCode === 38 ) && bullets.length < 1000 && shoot === false && hit === false) {
 
-        fired = true;
+        shoot = true;
 
         var newBullet = {
             x: x,
@@ -611,7 +603,7 @@ var keyReleased = function() {
     }
 };
 
-//this keyReleased function stops movement once the left and right arrow keys are released. Hitting the up arrow makes fired = true which activates the timer. It also creates a new bullet to push into the bullets array which is already controlled above
+//this keyReleased function stops movement once the left and right arrow keys are released. Hitting the up arrow makes shoot = true which activates the clock. It also creates a new bullet to push into the bullets array which is already controlled above
 
 var drawHead=function(bitmojiX,bitmojiY,bitmojiH)
 {
@@ -846,6 +838,38 @@ var startScreen= function(){
 
 //The start scene contains the title which is written in a font which we found on Khan. It also, like all the other scenes, contains the moving star background. Then, it has the two ships of the game moving back and forth as well as buttons to get to other scenes.
 
+var bitmojiAppear = function(){
+    if (score > 400){
+        strokeWeight(1);
+        stroke(0, 0, 0);
+        drawBitmoji(550+moveX1, 50, 30);
+        fill(255, 255, 255);
+        ellipse(500+moveX1,50,65,40);
+        fill(0, 0, 0);
+        textSize(11);
+        text("Nice Job!",471+moveX1,42);
+    }
+    if (score >= 500){
+        moveX1=500;
+    }
+
+    if (score > 600){
+        strokeWeight(1);
+        stroke(0, 0, 0);
+        drawME(550+moveX2, 50, 30); 
+        fill(255, 255, 255);
+        ellipse(500+moveX2,50,70,40);
+        fill(0, 0, 0);
+        textSize(11);
+        text("Great Job!",467+moveX2,42);
+    }
+    if (score >= 700){
+        moveX2=500;
+    }
+};
+
+//This makes a bitmoji appear in the game when a certain score is reached and then disappear when the score is a 100 more than when it appears.
+
 var gameOver = function(){
     // draw the game over scene and button
    background(0, 0, 0);
@@ -882,6 +906,16 @@ var HowToPlay = function(){
 
 //The how to play scene contains directions on how to play, as well as a button and both bitmojis
 
+var game_main = function() {
+    strokeWeight(2);
+    new_enemy(); 
+    bulletControl();
+    player(); 
+    bitmojiAppear(); 
+};
+
+//The main game scene  has the new enemy function to draw new enemies, the bullet control function allows for the bullets to move across the scene, and of course the player function is there to draw the player
+
 var spaceShipChoice = function(){
          background(0, 0, 0);
     for(var i = 0; i < numStars; i++) {
@@ -911,7 +945,7 @@ var draw = function() {
     for(var i = 0; i < numStars; i++) {
         stars[i].draw();
     }
-
+    
     if (currentScene === 0){
         startScreen();
     }
