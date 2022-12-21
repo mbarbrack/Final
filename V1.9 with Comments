@@ -531,9 +531,7 @@ var enemyControl = function() {
 
 var bulletControl = function() {
     for (var i = 0; i < bullets.length; i += 1) {
-        // move the bullet
         bullets[i].y += bullets[i].ySpeed;
-        // draw the bullet
         bullet_draw(bullets[i].x, bullets[i].y);
     }
 
