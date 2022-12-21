@@ -27,6 +27,7 @@ var moveX1 = 0; //Makes bitmoji appear
 var moveX2 = 0; //Makes bitmoji appear
 var lengthTime = 1; //Time timer is run for
 var last = 0; //Part of timer
+var over = 1; //Turns off shooting when game ends
 
 var drawTIE = function(characterX,characterY){
     //left wing
@@ -486,7 +487,7 @@ var enemyControl = function() {
                 enemies[i].y = random(1, -20);
                 enemies[i].x = random(30, 570);
                 bullets.splice(e, 1);
-                score= score + 10;
+                score= score + 10 * over;
                 e--;
             }
 
@@ -897,6 +898,7 @@ var gameOver = function(){
          for(var i = 0; i < numStars; i++) {
         stars[i].draw();
     }
+    over = 0;
 };
 
 //The game over screen appears if the player looses both lives. It has the moving star background as well as the font variable
